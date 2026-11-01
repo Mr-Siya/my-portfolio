@@ -33,36 +33,36 @@ const TEMPLATES = [
 /* =========================================================
    BACKGROUND: soft moving wave lines (canvas)
    ========================================================= */
-function WaveBackground() {
+function WaveBackground({ animate }) {
   const canvasRef = useRef(null);
+  const ctrl = useRef({ start() {}, stop() {} });
 
   useEffect(() => {
     const canvas = canvasRef.current;
     const ctx = canvas.getContext("2d");
     const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-    let w, h, dpr, raf;
-    let t = 0;
+    const FRAME_MS = 1000 / 30; // slow waves look smooth at 30fps and cost half as much
+    let w, h, raf = 0, t = 0, last = 0, running = false, resizeTimer;
 
     function resize() {
-      dpr = Math.min(window.devicePixelRatio || 1, 2);
+      // 1x pixel ratio on purpose: the lines are thin and faint, so retina detail
+      // would only multiply the drawing cost for no visible gain
       w = canvas.clientWidth;
       h = canvas.clientHeight;
-      canvas.width = w * dpr;
-      canvas.height = h * dpr;
-      ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+      canvas.width = w;
+      canvas.height = h;
     }
 
-    function draw() {
+    function render() {
       ctx.clearRect(0, 0, w, h);
-      t += 0.006;
       const rowSpacing = Math.max(34, h / 18);
       const rows = Math.ceil(h / rowSpacing) + 2;
+      const step = Math.max(16, w / 60);
       ctx.lineWidth = 1;
       ctx.strokeStyle = "rgba(255,255,255,0.07)";
+      ctx.beginPath(); // one path and one stroke for all the lines
       for (let r = -1; r < rows; r++) {
         const baseY = r * rowSpacing;
-        const step = Math.max(10, w / 90);
-        ctx.beginPath();
         for (let x = -step; x <= w + step; x += step) {
           const y =
             baseY +
@@ -71,24 +71,55 @@ function WaveBackground() {
           if (x === -step) ctx.moveTo(x, y);
           else ctx.lineTo(x, y);
         }
-        ctx.stroke();
       }
-      if (!reduceMotion) raf = requestAnimationFrame(draw);
+      ctx.stroke();
     }
 
+    function loop(now) {
+      raf = requestAnimationFrame(loop);
+      const dt = now - last;
+      if (dt < FRAME_MS) return;
+      t += (Math.min(dt, 100) / 1000) * 0.36; // same speed as before at any frame rate
+      last = now;
+      render();
+    }
+
+    ctrl.current = {
+      start() {
+        if (running || reduceMotion) return;
+        running = true;
+        last = performance.now();
+        raf = requestAnimationFrame(loop);
+      },
+      stop() {
+        running = false;
+        cancelAnimationFrame(raf);
+      },
+    };
+
     function onResize() {
-      resize();
-      if (reduceMotion) draw();
+      clearTimeout(resizeTimer);
+      resizeTimer = setTimeout(() => {
+        resize();
+        render();
+      }, 120);
     }
 
     resize();
-    draw();
+    render();
     window.addEventListener("resize", onResize);
     return () => {
       window.removeEventListener("resize", onResize);
-      cancelAnimationFrame(raf);
+      clearTimeout(resizeTimer);
+      ctrl.current.stop();
     };
   }, []);
+
+  // animate only while it's wanted (not behind the contact form)
+  useEffect(() => {
+    if (animate) ctrl.current.start();
+    else ctrl.current.stop();
+  }, [animate]);
 
   return <canvas ref={canvasRef} className="waves" aria-hidden="true" />;
 }
@@ -263,6 +294,17 @@ export default function Portfolio() {
   const [page, setPage] = useState("home"); // home | about | templates
   const [showContact, setShowContact] = useState(false);
   const year = new Date().getFullYear();
+  const appRef = useRef(null);
+
+  // once a page has faded out, send it back to the top so it opens fresh next time
+  useEffect(() => {
+    const id = setTimeout(() => {
+      appRef.current?.querySelectorAll(".page:not(.is-active)").forEach((el) => {
+        el.scrollTop = 0;
+      });
+    }, 600);
+    return () => clearTimeout(id);
+  }, [page]);
 
   const openContact = useCallback(() => setShowContact(true), []);
   const closeContact = useCallback(() => setShowContact(false), []);
@@ -274,14 +316,19 @@ export default function Portfolio() {
   );
 
   return (
-    <div className="app">
-      <WaveBackground />
+    <div className="app" ref={appRef}>
+      <WaveBackground animate={!showContact} />
 
       <header className="nav">
         <button className="brand" onClick={() => setPage("home")}>
           {NAME}
         </button>
         <nav className="nav-links">
+          {page !== "home" && (
+            <button className="nav-link nav-back" onClick={() => setPage("home")}>
+              ‹ Home
+            </button>
+          )}
           {link("about", "About")}
           {link("templates", "Templates")}
           <button className="nav-link" onClick={openContact}>
