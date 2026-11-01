@@ -235,11 +235,11 @@ a { color: inherit; text-decoration: none; }
 .page-sub { margin-top: 16px; font-size: var(--fs-body); color: var(--body); }
 .tpl-list { margin-top: 48px; border-top: 1px solid var(--line); }
 .tpl-row {
-  display: flex;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1.3fr); /* text left, preview right */
   align-items: center;
-  justify-content: space-between;
-  gap: 20px;
-  padding: 28px 0;
+  gap: clamp(24px, 4vw, 56px);
+  padding: 36px 0;
   border-bottom: 1px solid var(--line);
 }
 .tpl-name {
@@ -249,10 +249,13 @@ a { color: inherit; text-decoration: none; }
 }
 .tpl-desc { margin-top: 6px; max-width: 46ch; font-size: 17px; line-height: 1.45; color: var(--muted); }
 .tpl-tags { margin-top: 10px; font-size: 14px; letter-spacing: 0.04em; color: var(--faint); }
-.tpl-img { width: 100%; margin-top: 16px; border-radius: 16px; }
-.tpl-link { font-size: 17px; white-space: nowrap; }
+.tpl-shot { display: block; overflow: hidden; border: 1px solid var(--line); border-radius: 16px; }
+.tpl-img { display: block; width: 100%; height: auto; transition: transform 400ms ease; }
+.tpl-shot:hover .tpl-img { transform: scale(1.02); }
+.tpl-link { display: inline-block; margin-top: 20px; font-size: 17px; white-space: nowrap; }
 .tpl-link:hover { opacity: 0.7; }
-.tpl-soon { font-size: 15px; color: var(--muted); white-space: nowrap; }
+.tpl-soon { display: inline-block; margin-top: 20px; font-size: 15px; color: var(--muted); white-space: nowrap; }
+@media (prefers-reduced-motion: reduce) { .tpl-img { transition: none; } }
 
 /* =========================================================
    CONTACT MODAL
@@ -310,5 +313,7 @@ textarea.field { min-height: 120px; resize: vertical; }
    ========================================================= */
 @media (max-width: 560px) {
   .nav { padding-top: 14px; padding-bottom: 6px; }
-  .tpl-row { flex-direction: column; align-items: flex-start; gap: 14px; }
+}
+@media (max-width: 760px) {
+  .tpl-row { grid-template-columns: 1fr; }
 }

@@ -1,4 +1,5 @@
 import { useState, useEffect, useRef, useCallback } from "react";
+import barberShot from "./assets/templates/barber.webp";
 
 /* =========================================================
    CONTENT: edit your text, prices and templates here
@@ -22,11 +23,12 @@ const PRICES = [
 // - image: optional preview, e.g. import shot from "./assets/templates/barber.png"
 const TEMPLATES = [
   {
-    name: "Barber Shop",
-    description: "One-page site for barbers: services, prices, WhatsApp booking.",
-    tags: ["HTML", "CSS", "Responsive"],
-    liveUrl: "",
-    image: null,
+    name: "Barbershop",
+    description:
+      "One-page site for barbers: services and prices, opening hours, directions and WhatsApp booking. A single fast file with no JavaScript.",
+    tags: ["HTML", "CSS", "Responsive", "SEO-ready"],
+    liveUrl: "/templates/barber/",
+    image: barberShot,
   },
 ];
 
@@ -197,18 +199,38 @@ function TemplatesPage({ active }) {
         <div className="tpl-list">
           {TEMPLATES.map((t) => (
             <article className="tpl-row" key={t.name}>
-              <div>
+              <div className="tpl-info">
                 <h3 className="tpl-name">{t.name}</h3>
                 <p className="tpl-desc">{t.description}</p>
                 <p className="tpl-tags">{t.tags.join(" · ")}</p>
-                {t.image && <img className="tpl-img" src={t.image} alt={`${t.name} template preview`} />}
+                {t.liveUrl ? (
+                  <a className="tpl-link" href={t.liveUrl} target="_blank" rel="noopener noreferrer">
+                    View live →
+                  </a>
+                ) : (
+                  <span className="tpl-soon">Coming soon</span>
+                )}
               </div>
-              {t.liveUrl ? (
-                <a className="tpl-link" href={t.liveUrl} target="_blank" rel="noopener noreferrer">
-                  View live →
+              {t.image && (
+                // the preview is clickable too; the text link above serves keyboards and screen readers
+                <a
+                  className="tpl-shot"
+                  href={t.liveUrl || undefined}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  tabIndex={-1}
+                  aria-hidden="true"
+                >
+                  <img
+                    className="tpl-img"
+                    src={t.image}
+                    alt={`${t.name} template preview`}
+                    width="1200"
+                    height="750"
+                    loading="lazy"
+                    decoding="async"
+                  />
                 </a>
-              ) : (
-                <span className="tpl-soon">Coming soon</span>
               )}
             </article>
           ))}
