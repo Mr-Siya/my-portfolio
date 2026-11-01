@@ -3,7 +3,7 @@ import { useState, useEffect, useRef, useCallback } from "react";
 /* =========================================================
    CONTENT: edit your text, prices and templates here
    ========================================================= */
-const NAME = "Edmund";
+const NAME = "Siya";
 const LOCATION = "South Africa";
 const AGE = 20;
 const CONTACT_EMAIL = "workMail_Siya@proton.me";
