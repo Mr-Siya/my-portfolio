@@ -6,30 +6,31 @@
 
   TO CUSTOMISE FOR A CLIENT (use Ctrl+F to find each one):
     1. "Crown & Blade"   -> the business name (also in <title>, meta tags, footer and the JSON-LD block)
-    2. "27000000000"     -> WhatsApp number, international format, no "+" and no spaces (appears several times)
+    2. "27000000000"     -> WhatsApp / phone number, international format, no "+" and no spaces
     3. "123 Main Road"   -> the address (also in the Google Maps link and the JSON-LD block)
     4. Services & prices -> the <section id="services"> list
-    5. Opening hours     -> the <section id="hours"> table (and the JSON-LD block)
-    6. Colours           -> the variables at the top of <style> (:root)
-    7. Before launch     -> delete the grey "demo" strip at the top and the <meta name="robots"> line
+    5. Opening hours     -> the <table class="hours"> (and the JSON-LD block)
+    6. About text        -> the <section id="about"> paragraph
+    7. Colours           -> the variables at the top of <style> (:root)
+    8. Before launch     -> delete the grey "demo" strip at the top and the <meta name="robots"> line
 
   NEXT UPGRADES (these matter most):
-    - A gallery of 6-9 REAL photos of the shop and the cuts (compress them, add alt text)
-    - REAL customer reviews (with permission), see the commented block in the page
+    - 6-9 REAL photos of the shop and the cuts (compressed, with alt text)
+    - 3 REAL customer reviews, with permission
 -->
 <html lang="en">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Crown &amp; Blade Barbers | Haircuts, Fades &amp; Beard Trims</title>
-  <meta name="description" content="Crown &amp; Blade Barbers: classic cuts, skin fades, beard trims and hot towel shaves. Walk-ins welcome. Book on WhatsApp.">
-  <meta name="theme-color" content="#0c0c0c">
+  <meta name="description" content="Crown &amp; Blade Barbers: cuts, skin fades, beard trims and hot towel shaves. Walk-ins welcome. Book on WhatsApp.">
+  <meta name="theme-color" content="#000000">
   <!-- DEMO ONLY: delete this line when launching for a real client so search engines can index the site -->
   <meta name="robots" content="noindex">
   <meta property="og:type" content="website">
   <meta property="og:title" content="Crown &amp; Blade Barbers">
-  <meta property="og:description" content="Classic cuts, skin fades and beard trims. Walk-ins welcome. Book on WhatsApp.">
-  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='.9em' font-size='90'%3E✂%3C/text%3E%3C/svg%3E">
+  <meta property="og:description" content="Cuts, skin fades and beard trims. Walk-ins welcome. Book on WhatsApp.">
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='22' fill='black'/%3E%3Ctext x='50' y='70' font-size='62' font-weight='700' text-anchor='middle' fill='white' font-family='Arial,sans-serif'%3EC%3C/text%3E%3C/svg%3E">
 
   <!-- Helps Google show your hours, address and phone in search results -->
   <script type="application/ld+json">
@@ -37,9 +38,9 @@
     "@context": "https://schema.org",
     "@type": "HairSalon",
     "name": "Crown & Blade Barbers",
-    "description": "Classic cuts, skin fades, beard trims and hot towel shaves.",
+    "description": "Cuts, skin fades, beard trims and hot towel shaves.",
     "telephone": "+27000000000",
-    "priceRange": "R60-R150",
+    "priceRange": "R60-R130",
     "address": {
       "@type": "PostalAddress",
       "streetAddress": "123 Main Road",
@@ -56,15 +57,12 @@
   <style>
     /* ===== DESIGN TOKENS: change the whole look here ===== */
     :root {
-      --bg: #0c0c0c;
-      --surface: #151515;
-      --line: #2a2a2a;
-      --text: #f2efe9;
-      --muted: #a8a399;
-      --accent: #c9a45c;      /* brass / gold */
-      --accent-ink: #0c0c0c;  /* text on top of the accent colour */
-      --font: system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
-      --wrap: 1100px;
+      --bg: #000;
+      --text: #fff;
+      --muted: #a1a1a6;   /* grey: secondary text */
+      --line: #2c2c2e;    /* grey: dividers */
+      --font: -apple-system, BlinkMacSystemFont, "SF Pro Display", "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+      --wrap: 1080px;
     }
 
     /* ===== BASE ===== */
@@ -75,106 +73,84 @@
       margin: 0;
       background: var(--bg);
       color: var(--text);
-      font: 400 17px/1.6 var(--font);
+      font: 400 19px/1.55 var(--font);
       -webkit-font-smoothing: antialiased;
     }
-    h1, h2, h3, p { margin: 0; }
+    h1, h2, p { margin: 0; }
     a { color: inherit; }
-    :focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; }
+    :focus-visible { outline: 2px solid var(--text); outline-offset: 4px; }
     .wrap { width: min(100% - 40px, var(--wrap)); margin-inline: auto; }
     .sr { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
-    .skip { position: absolute; left: -999px; top: 8px; z-index: 100; padding: 10px 16px; border-radius: 8px; background: var(--accent); color: var(--accent-ink); font-weight: 700; }
+    .skip { position: absolute; left: -999px; top: 8px; z-index: 100; padding: 10px 16px; border-radius: 999px; background: var(--text); color: var(--bg); font-weight: 600; }
     .skip:focus { left: 8px; }
 
     /* ===== BUTTONS ===== */
     .btn {
       display: inline-block;
-      padding: 14px 26px;
-      border: 2px solid var(--accent);
+      padding: 15px 30px;
+      border: 1px solid var(--text);
       border-radius: 999px;
-      font-size: 16px;
-      font-weight: 700;
-      letter-spacing: 0.02em;
+      font-size: 17px;
+      font-weight: 600;
       text-decoration: none;
       text-align: center;
-      transition: background 0.15s ease, border-color 0.15s ease;
+      transition: opacity 0.15s ease, border-color 0.15s ease;
     }
-    .btn-primary { background: var(--accent); color: var(--accent-ink); }
-    .btn-primary:hover { background: #d8b36c; border-color: #d8b36c; }
-    .btn-ghost { background: transparent; color: var(--text); border-color: var(--line); }
-    .btn-ghost:hover { border-color: var(--accent); }
-    .btn-sm { padding: 10px 18px; font-size: 14px; }
+    .btn-primary { background: var(--text); color: var(--bg); }
+    .btn-primary:hover { opacity: 0.85; }
+    .btn-ghost { border-color: var(--line); background: transparent; color: var(--text); }
+    .btn-ghost:hover { border-color: var(--muted); }
+    .btn-sm { padding: 9px 20px; font-size: 15px; }
 
     /* ===== DEMO STRIP (delete for a real client) ===== */
-    .demo { padding: 8px 16px; background: #1b1b1b; color: var(--muted); font-size: 13px; text-align: center; }
-    .demo a { color: var(--accent); text-underline-offset: 3px; }
+    .demo { padding: 10px 16px; border-bottom: 1px solid var(--line); color: var(--muted); font-size: 14px; text-align: center; }
+    .demo a { color: var(--text); text-underline-offset: 3px; }
 
     /* ===== HEADER ===== */
-    .site-header { position: sticky; top: 0; z-index: 50; background: rgba(12, 12, 12, 0.97); border-bottom: 1px solid var(--line); }
-    .pole { height: 4px; background: repeating-linear-gradient(135deg, #b3202a 0 14px, #f2efe9 14px 28px, #24509e 28px 42px); }
+    .site-header { position: sticky; top: 0; z-index: 50; background: rgba(0, 0, 0, 0.94); border-bottom: 1px solid var(--line); }
     .bar { display: flex; align-items: center; justify-content: space-between; gap: 16px; padding: 14px 0; }
-    .logo { display: flex; flex-direction: column; line-height: 1.05; text-decoration: none; }
-    .logo b { font-size: 20px; font-weight: 800; letter-spacing: 0.14em; text-transform: uppercase; }
-    .logo small { margin-top: 4px; color: var(--accent); font-size: 11px; letter-spacing: 0.38em; text-transform: uppercase; }
-    .nav { display: flex; align-items: center; gap: 28px; }
-    .nav a:not(.btn) { color: var(--muted); font-size: 15px; text-decoration: none; }
+    .logo { font-size: 21px; font-weight: 700; letter-spacing: -0.01em; text-decoration: none; }
+    .nav { display: flex; align-items: center; gap: 30px; }
+    .nav a:not(.btn) { color: var(--muted); font-size: 16px; text-decoration: none; }
     .nav a:not(.btn):hover { color: var(--text); }
 
     /* ===== SECTIONS ===== */
-    section { padding: clamp(64px, 9vw, 110px) 0; scroll-margin-top: 84px; }
-    h2 { font-size: clamp(30px, 5vw, 52px); font-weight: 800; line-height: 1.05; letter-spacing: -0.01em; text-transform: uppercase; text-wrap: balance; }
-    .section-head { margin-bottom: 48px; }
-    .section-head p { margin-top: 14px; max-width: 52ch; color: var(--muted); }
-    .alt { background: var(--surface); border-block: 1px solid var(--line); }
+    section { padding: clamp(72px, 10vw, 128px) 0; scroll-margin-top: 72px; }
+    section + section { border-top: 1px solid var(--line); }
+    h2 { font-size: clamp(36px, 6vw, 64px); font-weight: 700; line-height: 1.05; letter-spacing: -0.03em; text-wrap: balance; }
 
     /* ===== HERO ===== */
-    .hero {
-      padding: clamp(72px, 14vw, 150px) 0 clamp(64px, 10vw, 110px);
-      background: radial-gradient(900px 420px at 85% 0%, rgba(201, 164, 92, 0.16), transparent 65%);
-    }
-    .eyebrow { margin-bottom: 20px; color: var(--accent); font-size: 13px; font-weight: 700; letter-spacing: 0.3em; text-transform: uppercase; }
-    .hero h1 { max-width: 9em; font-size: clamp(38px, 9vw, 104px); font-weight: 800; line-height: 0.98; letter-spacing: -0.02em; text-transform: uppercase; }
-    .lead { max-width: 46ch; margin-top: 24px; color: var(--muted); font-size: clamp(18px, 2.2vw, 22px); }
-    .actions { display: flex; flex-wrap: wrap; gap: 14px; margin-top: 36px; }
-    .facts { display: flex; flex-wrap: wrap; gap: 10px 28px; margin: 48px 0 0; padding: 0; color: var(--muted); font-size: 15px; list-style: none; }
-    .facts li::before { content: "✂"; margin-right: 8px; color: var(--accent); }
+    .hero { padding: clamp(80px, 15vw, 176px) 0 clamp(72px, 11vw, 136px); }
+    .hero h1 { max-width: 10ch; font-size: clamp(52px, 11vw, 128px); font-weight: 700; line-height: 0.98; letter-spacing: -0.045em; }
+    .lead { margin-top: 28px; color: var(--muted); font-size: clamp(20px, 2.4vw, 26px); }
+    .actions { display: flex; flex-wrap: wrap; gap: 14px; margin-top: 40px; }
 
     /* ===== SERVICES & PRICES ===== */
-    .price-list { display: grid; grid-template-columns: repeat(2, 1fr); gap: 0 64px; margin: 0; padding: 0; list-style: none; }
-    .price-list li { padding: 22px 0; border-bottom: 1px solid var(--line); }
-    .row { display: flex; align-items: baseline; gap: 12px; }
-    .row b { font-size: 20px; font-weight: 700; }
-    .row i { flex: 1; border-bottom: 2px dotted #3a3a3a; transform: translateY(-4px); }
-    .row span { color: var(--accent); font-size: 20px; font-weight: 800; white-space: nowrap; }
-    .price-list small { display: block; margin-top: 4px; color: var(--muted); font-size: 15px; }
+    .price-list { margin: clamp(32px, 5vw, 56px) 0 0; padding: 0; list-style: none; }
+    .price-list li {
+      display: grid; grid-template-columns: 1fr auto; gap: 4px 24px;
+      padding: 28px 0; border-top: 1px solid var(--line);
+    }
+    .price-list li:last-child { border-bottom: 1px solid var(--line); }
+    .price-list b { font-size: clamp(22px, 3vw, 30px); font-weight: 700; letter-spacing: -0.02em; }
+    .price-list span { font-size: clamp(22px, 3vw, 30px); font-weight: 700; letter-spacing: -0.02em; white-space: nowrap; }
+    .price-list small { grid-column: 1; color: var(--muted); font-size: 17px; }
 
     /* ===== ABOUT ===== */
-    .about-grid { display: grid; grid-template-columns: 1fr 1fr; gap: clamp(32px, 6vw, 80px); align-items: start; }
-    .about-text p { color: var(--muted); }
-    .about-text p + p { margin-top: 16px; }
-    .points { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; margin: 56px 0 0; padding: 0; list-style: none; }
-    .points li { padding: 24px; border: 1px solid var(--line); border-radius: 16px; background: var(--bg); }
-    .points em { color: var(--accent); font-size: 14px; font-style: normal; font-weight: 800; letter-spacing: 0.1em; }
-    .points h3 { margin: 10px 0 6px; font-size: 20px; }
-    .points p { color: var(--muted); font-size: 15px; }
+    .about p { max-width: 30ch; margin-top: 28px; color: var(--muted); font-size: clamp(22px, 3vw, 30px); line-height: 1.35; letter-spacing: -0.01em; }
+    .about p b { color: var(--text); font-weight: 600; }
 
     /* ===== HOURS & LOCATION ===== */
-    .cards { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
-    .card { padding: clamp(24px, 4vw, 40px); border: 1px solid var(--line); border-radius: 20px; background: var(--surface); }
-    .card h3 { margin-bottom: 20px; font-size: 22px; letter-spacing: 0.06em; text-transform: uppercase; }
-    .hours { width: 100%; border-collapse: collapse; }
-    .hours th, .hours td { padding: 12px 0; border-bottom: 1px solid var(--line); font-weight: 400; text-align: left; }
+    .info { display: grid; grid-template-columns: 1fr 1fr; gap: clamp(48px, 8vw, 112px); }
+    .hours { width: 100%; margin-top: 32px; border-collapse: collapse; font-size: clamp(19px, 2.2vw, 22px); }
+    .hours th, .hours td { padding: 16px 0; border-top: 1px solid var(--line); font-weight: 400; text-align: left; }
+    .hours tr:last-child th, .hours tr:last-child td { border-bottom: 1px solid var(--line); }
+    .hours th { font-weight: 600; }
     .hours td { color: var(--muted); text-align: right; }
-    address { color: var(--muted); font-style: normal; }
-    .contact-list { display: grid; gap: 10px; margin: 20px 0 28px; padding: 0; list-style: none; }
-    .contact-list a { text-underline-offset: 3px; }
-
-    /* ===== CALL TO ACTION ===== */
-    .cta { background: var(--accent); color: var(--accent-ink); text-align: center; }
-    .cta h2 { max-width: 20ch; margin-inline: auto; }
-    .cta p { max-width: 44ch; margin: 16px auto 28px; color: #2a2214; text-wrap: balance; }
-    .cta .btn { border-color: var(--accent-ink); background: var(--accent-ink); color: var(--text); }
-    .cta .btn:hover { border-color: #000; background: #000; }
+    address { margin-top: 32px; color: var(--muted); font-size: clamp(19px, 2.2vw, 22px); font-style: normal; }
+    .contact { display: grid; gap: 6px; margin: 20px 0 32px; padding: 0; font-size: clamp(19px, 2.2vw, 22px); list-style: none; }
+    .contact span { color: var(--muted); }
+    .contact a { font-weight: 600; text-underline-offset: 4px; }
 
     /* ===== FOOTER ===== */
     .site-footer { padding: 40px 0 48px; border-top: 1px solid var(--line); color: var(--muted); font-size: 14px; }
@@ -185,11 +161,8 @@
     .mobile-bar { display: none; }
 
     /* ===== RESPONSIVE ===== */
-    @media (max-width: 860px) {
-      .about-grid, .points, .cards { grid-template-columns: 1fr; }
-    }
     @media (max-width: 760px) {
-      .price-list { grid-template-columns: 1fr; }
+      .info { grid-template-columns: 1fr; }
     }
     @media (max-width: 720px) {
       .nav { display: none; }
@@ -198,10 +171,10 @@
         display: grid; grid-template-columns: 1fr 1fr; gap: 10px;
         padding: 10px 14px calc(10px + env(safe-area-inset-bottom));
         border-top: 1px solid var(--line);
-        background: rgba(12, 12, 12, 0.97);
+        background: rgba(0, 0, 0, 0.96);
       }
-      .mobile-bar .btn { padding: 13px 10px; }
-      .site-footer { padding-bottom: 100px; }
+      .mobile-bar .btn { padding: 14px 10px; }
+      .site-footer { padding-bottom: 104px; }
     }
   </style>
 </head>
@@ -210,20 +183,16 @@
 
   <!-- DELETE this strip when you launch the site for a real client -->
   <div class="demo">
-    Demo template for a fictional shop. <a href="/">Want a site like this for your business? Get in touch</a>
+    Demo template for a fictional shop. <a href="/">Want a site like this? Get in touch</a>
   </div>
 
   <header class="site-header">
-    <div class="pole" aria-hidden="true"></div>
     <div class="wrap bar">
-      <a class="logo" href="#top" aria-label="Crown &amp; Blade Barbers, back to top">
-        <b>Crown &amp; Blade</b>
-        <small>Barbers</small>
-      </a>
+      <a class="logo" href="#top" aria-label="Crown &amp; Blade Barbers, back to top">Crown &amp; Blade</a>
       <nav class="nav" aria-label="Main">
         <a href="#services">Services</a>
         <a href="#about">About</a>
-        <a href="#hours">Hours &amp; location</a>
+        <a href="#hours">Hours</a>
         <a class="btn btn-primary btn-sm" href="https://wa.me/27000000000?text=Hi%20Crown%20%26%20Blade%2C%20I%27d%20like%20to%20book%20a%20haircut.">Book now</a>
       </nav>
     </div>
@@ -234,125 +203,61 @@
     <!-- HERO -->
     <section class="hero">
       <div class="wrap">
-        <p class="eyebrow">Barbers &middot; Your City</p>
         <h1>Sharp cuts. Clean lines.</h1>
-        <p class="lead">Classic barbering for the modern man. Walk-ins welcome, appointments on WhatsApp.</p>
+        <p class="lead">Walk-ins welcome. Book on WhatsApp.</p>
         <div class="actions">
           <a class="btn btn-primary" href="https://wa.me/27000000000?text=Hi%20Crown%20%26%20Blade%2C%20I%27d%20like%20to%20book%20a%20haircut.">Book on WhatsApp</a>
-          <a class="btn btn-ghost" href="#services">View prices</a>
+          <a class="btn btn-ghost" href="#services">Prices</a>
         </div>
-        <ul class="facts">
-          <li>Walk-ins welcome</li>
-          <li>Hot towel finish</li>
-          <li>Open six days a week</li>
-        </ul>
       </div>
     </section>
 
     <!-- SERVICES & PRICES: edit names, descriptions and prices -->
-    <section id="services" class="alt">
+    <section id="services">
       <div class="wrap">
-        <div class="section-head">
-          <h2>Services &amp; prices</h2>
-          <p>Simple, honest pricing. No surprises at the till.</p>
-        </div>
+        <h2>Services</h2>
         <ul class="price-list">
-          <li>
-            <div class="row"><b>Classic Cut</b><i aria-hidden="true"></i><span>R90</span></div>
-            <small>Scissor or clipper cut, finished with a hot towel.</small>
-          </li>
-          <li>
-            <div class="row"><b>Skin Fade</b><i aria-hidden="true"></i><span>R120</span></div>
-            <small>Low, mid or high, blended clean down to the skin.</small>
-          </li>
-          <li>
-            <div class="row"><b>Beard Trim</b><i aria-hidden="true"></i><span>R60</span></div>
-            <small>Shape-up, line-up and a tidy finish.</small>
-          </li>
-          <li>
-            <div class="row"><b>Cut + Beard</b><i aria-hidden="true"></i><span>R130</span></div>
-            <small>The full package. Save R20 when you book both.</small>
-          </li>
-          <li>
-            <div class="row"><b>Kids Cut</b><i aria-hidden="true"></i><span>R70</span></div>
-            <small>Under 12. Patient, friendly and quick.</small>
-          </li>
-          <li>
-            <div class="row"><b>Hot Towel Shave</b><i aria-hidden="true"></i><span>R80</span></div>
-            <small>Straight-razor shave with a hot towel and balm.</small>
-          </li>
+          <li><b>Classic Cut</b><span>R90</span><small>Scissor or clipper cut, hot towel finish.</small></li>
+          <li><b>Skin Fade</b><span>R120</span><small>Low, mid or high, blended to the skin.</small></li>
+          <li><b>Beard Trim</b><span>R60</span><small>Shape-up and line-up.</small></li>
+          <li><b>Cut + Beard</b><span>R130</span><small>Both, for R20 less.</small></li>
+          <li><b>Kids Cut</b><span>R70</span><small>Under 12.</small></li>
+          <li><b>Hot Towel Shave</b><span>R80</span><small>Straight razor, hot towel and balm.</small></li>
         </ul>
       </div>
     </section>
 
     <!-- ABOUT -->
-    <section id="about">
+    <section id="about" class="about">
       <div class="wrap">
-        <div class="about-grid">
-          <h2>Old-school craft. Modern precision.</h2>
-          <div class="about-text">
-            <p>Crown &amp; Blade is a neighbourhood barbershop built on one idea: a great haircut should be consistent, on time and worth coming back for.</p>
-            <p>Whether you want a clean classic cut, a sharp fade or a beard that is finally under control, you will leave looking and feeling your best.</p>
-          </div>
-        </div>
-        <ul class="points">
-          <li><em>01</em><h3>Skilled barbers</h3><p>Years of experience with every hair type and style.</p></li>
-          <li><em>02</em><h3>Spotless tools</h3><p>Everything is cleaned and sterilised between clients.</p></li>
-          <li><em>03</em><h3>On time</h3><p>Book on WhatsApp and we keep your slot. Walk-ins welcome too.</p></li>
-        </ul>
+        <h2>About</h2>
+        <p><b>Crown &amp; Blade is a neighbourhood barbershop.</b> A great haircut should be consistent, on time and worth coming back for.</p>
       </div>
     </section>
-
-    <!--
-      ADD WHEN YOU HAVE THEM (real content only):
-
-      GALLERY: 6-9 real photos of the shop and the cuts. Use <img src="..." alt="Describe the cut" width="600" height="600" loading="lazy">
-
-      REVIEWS: 3 real customer reviews, with the customer's permission:
-      <section id="reviews" class="alt"><div class="wrap">
-        <div class="section-head"><h2>What clients say</h2></div>
-        <blockquote>"Their exact words."<footer>Customer name</footer></blockquote>
-      </div></section>
-    -->
 
     <!-- HOURS & LOCATION -->
-    <section id="hours" class="alt">
-      <div class="wrap">
-        <div class="section-head">
-          <h2>Hours &amp; location</h2>
+    <section id="hours">
+      <div class="wrap info">
+        <div>
+          <h2>Hours</h2>
+          <table class="hours">
+            <caption class="sr">Opening hours</caption>
+            <tbody>
+              <tr><th scope="row">Mon &ndash; Fri</th><td>08:00 &ndash; 18:00</td></tr>
+              <tr><th scope="row">Saturday</th><td>08:00 &ndash; 16:00</td></tr>
+              <tr><th scope="row">Sunday</th><td>Closed</td></tr>
+            </tbody>
+          </table>
         </div>
-        <div class="cards">
-          <div class="card">
-            <h3>Opening hours</h3>
-            <table class="hours">
-              <caption class="sr">Opening hours</caption>
-              <tbody>
-                <tr><th scope="row">Monday &ndash; Friday</th><td>08:00 &ndash; 18:00</td></tr>
-                <tr><th scope="row">Saturday</th><td>08:00 &ndash; 16:00</td></tr>
-                <tr><th scope="row">Sunday</th><td>Closed</td></tr>
-              </tbody>
-            </table>
-          </div>
-          <div class="card">
-            <h3>Find us</h3>
-            <address>123 Main Road, Your Suburb<br>Your City</address>
-            <ul class="contact-list">
-              <li>WhatsApp: <a href="https://wa.me/27000000000">+27 00 000 0000</a></li>
-              <li>Phone: <a href="tel:+27000000000">+27 00 000 0000</a></li>
-              <li>Email: <a href="mailto:hello@example.com">hello@example.com</a></li>
-            </ul>
-            <a class="btn btn-ghost" href="https://www.google.com/maps/search/?api=1&amp;query=123+Main+Road+Your+City" rel="noopener">Get directions</a>
-          </div>
+        <div>
+          <h2>Find us</h2>
+          <address>123 Main Road, Your Suburb<br>Your City</address>
+          <ul class="contact">
+            <li><span>WhatsApp</span> <a href="https://wa.me/27000000000">+27 00 000 0000</a></li>
+            <li><span>Call</span> <a href="tel:+27000000000">+27 00 000 0000</a></li>
+          </ul>
+          <a class="btn btn-ghost" href="https://www.google.com/maps/search/?api=1&amp;query=123+Main+Road+Your+City" rel="noopener">Get directions</a>
         </div>
-      </div>
-    </section>
-
-    <!-- CALL TO ACTION -->
-    <section class="cta" id="book">
-      <div class="wrap">
-        <h2>Ready for a fresh cut?</h2>
-        <p>Message us on WhatsApp to book your slot, or just walk in.</p>
-        <a class="btn" href="https://wa.me/27000000000?text=Hi%20Crown%20%26%20Blade%2C%20I%27d%20like%20to%20book%20a%20haircut.">Book on WhatsApp</a>
       </div>
     </section>
 
@@ -360,7 +265,7 @@
 
   <footer class="site-footer">
     <div class="wrap foot">
-      <p>&copy; 2026 Crown &amp; Blade Barbers. All rights reserved.</p>
+      <p>&copy; 2026 Crown &amp; Blade Barbers</p>
       <p>Website template by <a href="/">Siya</a></p>
     </div>
   </footer>
