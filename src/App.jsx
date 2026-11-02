@@ -1,5 +1,8 @@
 import { useState, useEffect, useRef, useCallback } from "react";
 import barberShot from "./assets/templates/barber.webp";
+import salonShot from "./assets/templates/salon.webp";
+import workshopShot from "./assets/templates/workshop.webp";
+import cafeShot from "./assets/templates/cafe.webp";
 
 /* =========================================================
    CONTENT: edit your text, prices and templates here
@@ -29,6 +32,30 @@ const TEMPLATES = [
     tags: ["HTML", "CSS", "Responsive", "SEO-ready"],
     liveUrl: "/templates/barber/",
     image: barberShot,
+  },
+  {
+    name: "Hair salon",
+    description:
+      "One-page site for salons: services with from-prices, hours, directions and WhatsApp booking. Same fast, no-JavaScript build.",
+    tags: ["HTML", "CSS", "Responsive", "SEO-ready"],
+    liveUrl: "/templates/salon/",
+    image: salonShot,
+  },
+  {
+    name: "Auto workshop",
+    description:
+      "One-page site for mechanics: services and prices, hours, directions and a get-a-quote button that opens WhatsApp.",
+    tags: ["HTML", "CSS", "Responsive", "SEO-ready"],
+    liveUrl: "/templates/workshop/",
+    image: workshopShot,
+  },
+  {
+    name: "Café",
+    description:
+      "One-page site for cafés and takeaways: menu with prices, hours, directions and WhatsApp ordering.",
+    tags: ["HTML", "CSS", "Responsive", "SEO-ready"],
+    liveUrl: "/templates/cafe/",
+    image: cafeShot,
   },
 ];
 

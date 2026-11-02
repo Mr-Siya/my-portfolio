@@ -1,0 +1,295 @@
+<!DOCTYPE html>
+<!--
+  AUTO WORKSHOP TEMPLATE  ·  by Siya
+  One file. No JavaScript, no frameworks, no external fonts or images, so it loads fast.
+  Open it in a browser to preview. Edit it in any code editor.
+
+  TO CUSTOMISE FOR A CLIENT (use Ctrl+F to find each one):
+    1. "Prime Auto Workshop"   -> the business name (also in <title>, meta tags, footer and the JSON-LD block)
+    2. "27000000000"     -> WhatsApp / phone number, international format, no "+" and no spaces
+    3. "123 Main Road"   -> the address (also in the Google Maps link and the JSON-LD block)
+    4. Services &amp; prices   -> the <section id="services"> list
+    5. Opening hours     -> the <table class="hours"> (and the JSON-LD block)
+    6. About text        -> the <section id="about"> paragraph
+    7. Colours           -> the variables at the top of <style> (:root)
+    8. Before launch     -> delete the grey "demo" strip at the top and the <meta name="robots"> line
+
+  NEXT UPGRADES (these matter most):
+    - 6-9 REAL photos of the business (compressed, with alt text)
+    - 3 REAL customer reviews, with permission
+-->
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Prime Auto Workshop | Services, Repairs &amp; Diagnostics</title>
+  <meta name="description" content="Prime Auto Workshop: car services, brakes, tyres and diagnostics. Get a quote on WhatsApp.">
+  <meta name="theme-color" content="#000000">
+  <!-- DEMO ONLY: delete this line when launching for a real client so search engines can index the site -->
+  <meta name="robots" content="noindex">
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="Prime Auto Workshop">
+  <meta property="og:description" content="Car services, brakes, tyres and diagnostics. Get a quote on WhatsApp.">
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='22' fill='black'/%3E%3Ctext x='50' y='70' font-size='62' font-weight='700' text-anchor='middle' fill='white' font-family='Arial,sans-serif'%3EP%3C/text%3E%3C/svg%3E">
+
+  <!-- Helps Google show your hours, address and phone in search results -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "AutoRepair",
+    "name": "Prime Auto Workshop",
+    "description": "Car services, brakes, tyres and diagnostics.",
+    "telephone": "+27000000000",
+    "priceRange": "R120-R1800",
+    "address": {
+      "@type": "PostalAddress",
+      "streetAddress": "123 Main Road",
+      "addressLocality": "Your City",
+      "addressCountry": "ZA"
+    },
+    "openingHoursSpecification": [
+      {
+        "@type": "OpeningHoursSpecification",
+        "dayOfWeek": [
+          "Monday",
+          "Tuesday",
+          "Wednesday",
+          "Thursday",
+          "Friday"
+        ],
+        "opens": "07:30",
+        "closes": "17:00"
+      },
+      {
+        "@type": "OpeningHoursSpecification",
+        "dayOfWeek": "Saturday",
+        "opens": "08:00",
+        "closes": "13:00"
+      }
+    ]
+  }
+  </script>
+
+  <style>
+    /* ===== DESIGN TOKENS: change the whole look here ===== */
+    :root {
+      --bg: #000;
+      --text: #fff;
+      --muted: #a1a1a6;   /* grey: secondary text */
+      --line: #2c2c2e;    /* grey: dividers */
+      --font: -apple-system, BlinkMacSystemFont, "SF Pro Display", "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+      --wrap: 1080px;
+    }
+
+    /* ===== BASE ===== */
+    *, *::before, *::after { box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    @media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } }
+    body {
+      margin: 0;
+      background: var(--bg);
+      color: var(--text);
+      font: 400 19px/1.55 var(--font);
+      -webkit-font-smoothing: antialiased;
+    }
+    h1, h2, p { margin: 0; }
+    a { color: inherit; }
+    :focus-visible { outline: 2px solid var(--text); outline-offset: 4px; }
+    .wrap { width: min(100% - 40px, var(--wrap)); margin-inline: auto; }
+    .sr { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+    .skip { position: absolute; left: -999px; top: 8px; z-index: 100; padding: 10px 16px; border-radius: 999px; background: var(--text); color: var(--bg); font-weight: 600; }
+    .skip:focus { left: 8px; }
+
+    /* ===== BUTTONS ===== */
+    .btn {
+      display: inline-block;
+      padding: 15px 30px;
+      border: 1px solid var(--text);
+      border-radius: 999px;
+      font-size: 17px;
+      font-weight: 600;
+      text-decoration: none;
+      text-align: center;
+      transition: opacity 0.15s ease, border-color 0.15s ease;
+    }
+    .btn-primary { background: var(--text); color: var(--bg); }
+    .btn-primary:hover { opacity: 0.85; }
+    .btn-ghost { border-color: var(--line); background: transparent; color: var(--text); }
+    .btn-ghost:hover { border-color: var(--muted); }
+    .btn-sm { padding: 9px 20px; font-size: 15px; }
+
+    /* ===== DEMO STRIP (delete for a real client) ===== */
+    .demo { padding: 10px 16px; border-bottom: 1px solid var(--line); color: var(--muted); font-size: 14px; text-align: center; }
+    .demo a { color: var(--text); text-underline-offset: 3px; }
+
+    /* ===== HEADER ===== */
+    .site-header { position: sticky; top: 0; z-index: 50; background: rgba(0, 0, 0, 0.94); border-bottom: 1px solid var(--line); }
+    .bar { display: flex; align-items: center; justify-content: space-between; gap: 16px; padding: 14px 0; }
+    .logo { font-size: 21px; font-weight: 700; letter-spacing: -0.01em; text-decoration: none; }
+    .nav { display: flex; align-items: center; gap: 30px; }
+    .nav a:not(.btn) { color: var(--muted); font-size: 16px; text-decoration: none; }
+    .nav a:not(.btn):hover { color: var(--text); }
+
+    /* ===== SECTIONS ===== */
+    section { padding: clamp(72px, 10vw, 128px) 0; scroll-margin-top: 72px; }
+    section + section { border-top: 1px solid var(--line); }
+    h2 { font-size: clamp(36px, 6vw, 64px); font-weight: 700; line-height: 1.05; letter-spacing: -0.03em; text-wrap: balance; }
+
+    /* ===== HERO ===== */
+    .hero { padding: clamp(80px, 15vw, 176px) 0 clamp(72px, 11vw, 136px); }
+    .hero h1 { max-width: 10ch; font-size: clamp(52px, 11vw, 128px); font-weight: 700; line-height: 0.98; letter-spacing: -0.045em; text-wrap: balance; }
+    .lead { margin-top: 28px; color: var(--muted); font-size: clamp(20px, 2.4vw, 26px); }
+    .actions { display: flex; flex-wrap: wrap; gap: 14px; margin-top: 40px; }
+
+    /* ===== SERVICES & PRICES ===== */
+    .price-list { margin: clamp(32px, 5vw, 56px) 0 0; padding: 0; list-style: none; }
+    .price-list li {
+      display: grid; grid-template-columns: 1fr auto; gap: 4px 24px;
+      padding: 28px 0; border-top: 1px solid var(--line);
+    }
+    .price-list li:last-child { border-bottom: 1px solid var(--line); }
+    .price-list b { font-size: clamp(22px, 3vw, 30px); font-weight: 700; letter-spacing: -0.02em; }
+    .price-list span { font-size: clamp(22px, 3vw, 30px); font-weight: 700; letter-spacing: -0.02em; white-space: nowrap; }
+    .price-list small { grid-column: 1; color: var(--muted); font-size: 17px; }
+
+    /* ===== ABOUT ===== */
+    .about p { max-width: 30ch; margin-top: 28px; color: var(--muted); font-size: clamp(22px, 3vw, 30px); line-height: 1.35; letter-spacing: -0.01em; }
+    .about p b { color: var(--text); font-weight: 600; }
+
+    /* ===== HOURS & LOCATION ===== */
+    .info { display: grid; grid-template-columns: 1fr 1fr; gap: clamp(48px, 8vw, 112px); }
+    .hours { width: 100%; margin-top: 32px; border-collapse: collapse; font-size: clamp(19px, 2.2vw, 22px); }
+    .hours th, .hours td { padding: 16px 0; border-top: 1px solid var(--line); font-weight: 400; text-align: left; }
+    .hours tr:last-child th, .hours tr:last-child td { border-bottom: 1px solid var(--line); }
+    .hours th { font-weight: 600; }
+    .hours td { color: var(--muted); text-align: right; }
+    address { margin-top: 32px; color: var(--muted); font-size: clamp(19px, 2.2vw, 22px); font-style: normal; }
+    .contact { display: grid; gap: 6px; margin: 20px 0 32px; padding: 0; font-size: clamp(19px, 2.2vw, 22px); list-style: none; }
+    .contact span { color: var(--muted); }
+    .contact a { font-weight: 600; text-underline-offset: 4px; }
+
+    /* ===== FOOTER ===== */
+    .site-footer { padding: 40px 0 48px; border-top: 1px solid var(--line); color: var(--muted); font-size: 14px; }
+    .foot { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 12px; }
+    .foot a { text-underline-offset: 3px; }
+
+    /* ===== MOBILE STICKY BAR ===== */
+    .mobile-bar { display: none; }
+
+    /* ===== RESPONSIVE ===== */
+    @media (max-width: 760px) {
+      .info { grid-template-columns: 1fr; }
+    }
+    @media (max-width: 720px) {
+      .nav { display: none; }
+      .mobile-bar {
+        position: fixed; inset: auto 0 0 0; z-index: 60;
+        display: grid; grid-template-columns: 1fr 1fr; gap: 10px;
+        padding: 10px 14px calc(10px + env(safe-area-inset-bottom));
+        border-top: 1px solid var(--line);
+        background: rgba(0, 0, 0, 0.96);
+      }
+      .mobile-bar .btn { padding: 14px 10px; }
+      .site-footer { padding-bottom: 104px; }
+    }
+  </style>
+</head>
+<body id="top">
+  <a class="skip" href="#main">Skip to content</a>
+
+  <!-- DELETE this strip when you launch the site for a real client -->
+  <div class="demo">
+    Demo template for a fictional business. <a href="/">Want a site like this? Get in touch</a>
+  </div>
+
+  <header class="site-header">
+    <div class="wrap bar">
+      <a class="logo" href="#top" aria-label="Prime Auto Workshop, back to top">Prime Auto Workshop</a>
+      <nav class="nav" aria-label="Main">
+        <a href="#services">Services</a>
+        <a href="#about">About</a>
+        <a href="#hours">Hours</a>
+        <a class="btn btn-primary btn-sm" href="https://wa.me/27000000000?text=Hi%20Prime%20Auto%20Workshop%2C%20I%27d%20like%20a%20quote.%20My%20car%20is%20a%20%28make%2C%20model%2C%20year%29%20and%20the%20problem%20is%3A%20">Get a quote</a>
+      </nav>
+    </div>
+  </header>
+
+  <main id="main">
+
+    <!-- HERO -->
+    <section class="hero">
+      <div class="wrap">
+        <h1>Fixed right. First time.</h1>
+        <p class="lead">Services, repairs and diagnostics. Get a quote on WhatsApp.</p>
+        <div class="actions">
+          <a class="btn btn-primary" href="https://wa.me/27000000000?text=Hi%20Prime%20Auto%20Workshop%2C%20I%27d%20like%20a%20quote.%20My%20car%20is%20a%20%28make%2C%20model%2C%20year%29%20and%20the%20problem%20is%3A%20">Get a quote</a>
+          <a class="btn btn-ghost" href="#services">Prices</a>
+        </div>
+      </div>
+    </section>
+
+    <!-- SERVICES AND PRICES: edit names, descriptions and prices -->
+    <section id="services">
+      <div class="wrap">
+        <h2>Services</h2>
+        <ul class="price-list">
+          <li><b>Full Service</b><span>from R1800</span><small>Oil, filters, plugs and a full safety check.</small></li>
+          <li><b>Oil &amp; Filter Change</b><span>from R650</span><small>Quick service between full services.</small></li>
+          <li><b>Brakes</b><span>from R900</span><small>Pads, discs and brake fluid.</small></li>
+          <li><b>Tyres</b><span>from R120</span><small>Fitting and balancing, per tyre.</small></li>
+          <li><b>Diagnostics</b><span>R350</span><small>Fault codes read and explained.</small></li>
+          <li><b>Wheel Alignment</b><span>R400</span><small>Straight, even tyre wear.</small></li>
+        </ul>
+      </div>
+    </section>
+
+    <!-- ABOUT -->
+    <section id="about" class="about">
+      <div class="wrap">
+        <h2>About</h2>
+        <p><b>Prime Auto is an independent workshop.</b> We tell you what your car needs, what it costs and when it will be ready, before we start work.</p>
+      </div>
+    </section>
+
+    <!-- HOURS & LOCATION -->
+    <section id="hours">
+      <div class="wrap info">
+        <div>
+          <h2>Hours</h2>
+          <table class="hours">
+            <caption class="sr">Opening hours</caption>
+            <tbody>
+              <tr><th scope="row">Mon &ndash; Fri</th><td>07:30 &ndash; 17:00</td></tr>
+              <tr><th scope="row">Saturday</th><td>08:00 &ndash; 13:00</td></tr>
+              <tr><th scope="row">Sunday</th><td>Closed</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <div>
+          <h2>Find us</h2>
+          <address>123 Main Road, Your Suburb<br>Your City</address>
+          <ul class="contact">
+            <li><span>WhatsApp</span> <a href="https://wa.me/27000000000">+27 00 000 0000</a></li>
+            <li><span>Call</span> <a href="tel:+27000000000">+27 00 000 0000</a></li>
+          </ul>
+          <a class="btn btn-ghost" href="https://www.google.com/maps/search/?api=1&amp;query=123+Main+Road+Your+City" rel="noopener">Get directions</a>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <footer class="site-footer">
+    <div class="wrap foot">
+      <p>&copy; 2026 Prime Auto Workshop</p>
+      <p>Website template by <a href="/">Siya</a></p>
+    </div>
+  </footer>
+
+  <!-- Sticky bar for phones: the two actions customers want most -->
+  <div class="mobile-bar">
+    <a class="btn btn-primary" href="https://wa.me/27000000000?text=Hi%20Prime%20Auto%20Workshop%2C%20I%27d%20like%20a%20quote.%20My%20car%20is%20a%20%28make%2C%20model%2C%20year%29%20and%20the%20problem%20is%3A%20">WhatsApp</a>
+    <a class="btn btn-ghost" href="tel:+27000000000">Call</a>
+  </div>
+</body>
+</html>
