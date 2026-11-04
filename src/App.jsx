@@ -28,7 +28,7 @@ const TEMPLATES = [
   {
     name: "Barbershop",
     description:
-      "One-page site for barbers: services and prices, opening hours, directions and WhatsApp booking. A single fast file with no JavaScript.",
+      "One-page site for barbers: services and prices, opening hours with a live “Today” marker, directions and WhatsApp booking. One fast HTML file and one photo.",
     tags: ["HTML", "CSS", "Responsive", "SEO-ready"],
     liveUrl: "/templates/barber/",
     image: barberShot,

@@ -1,18 +1,20 @@
 <!DOCTYPE html>
 <!--
   BARBERSHOP TEMPLATE  ·  by Siya
-  One file. No JavaScript, no frameworks, no external fonts or images, so it loads fast.
+  One HTML file + one photo (hero.webp). No frameworks, no external fonts, and one tiny script
+  (the "Today" marker in the opening hours), so it loads fast.
   Open it in a browser to preview. Edit it in any code editor.
 
   TO CUSTOMISE FOR A CLIENT (use Ctrl+F to find each one):
-    1. "Crown & Blade"   -> the business name (also in <title>, meta tags, footer and the JSON-LD block)
-    2. "27000000000"     -> WhatsApp / phone number, international format, no "+" and no spaces
-    3. "123 Main Road"   -> the address (also in the Google Maps link and the JSON-LD block)
-    4. Services & prices -> the <section id="services"> list
-    5. Opening hours     -> the <table class="hours"> (and the JSON-LD block)
-    6. About text        -> the <section id="about"> paragraph
-    7. Colours           -> the variables at the top of <style> (:root)
-    8. Before launch     -> delete the grey "demo" strip at the top and the <meta name="robots"> line
+    1. "Noir Barbers"      -> the business name (also in <title>, meta tags, footer and the JSON-LD block)
+    2. "27000000000"       -> WhatsApp / phone number, international format, no "+" and no spaces
+    3. "12 Long Street"    -> the address (also in the Google Maps link and the JSON-LD block)
+    4. Services & prices   -> the <section id="services"> list (and the buttons at the bottom of <section id="book">)
+    5. Opening hours       -> the <table class="hours"> (and the JSON-LD block)
+    6. Time zone           -> SHOP_TZ in the <script> at the bottom, so "Today" is correct for visitors anywhere
+    7. Photo               -> replace hero.webp with a real photo of the shop (about 1600px wide, under 100 KB)
+    8. Colours             -> the variables at the top of <style> (:root)
+    9. Before launch       -> delete the grey "demo" strip at the top and the <meta name="robots"> line
 
   NEXT UPGRADES (these matter most):
     - 6-9 REAL photos of the shop and the cuts (compressed, with alt text)
@@ -22,33 +24,35 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Crown &amp; Blade Barbers | Haircuts, Fades &amp; Beard Trims</title>
-  <meta name="description" content="Crown &amp; Blade Barbers: cuts, skin fades, beard trims and hot towel shaves. Walk-ins welcome. Book on WhatsApp.">
-  <meta name="theme-color" content="#000000">
+  <title>Noir Barbers | Precision Cuts &amp; Classic Shaves</title>
+  <meta name="description" content="Noir Barbers: precision cuts, skin fades, hot towel shaves and beard sculpting. Walk-ins welcome. Book on WhatsApp.">
+  <meta name="theme-color" content="#ffffff">
   <!-- DEMO ONLY: delete this line when launching for a real client so search engines can index the site -->
   <meta name="robots" content="noindex">
   <meta property="og:type" content="website">
-  <meta property="og:title" content="Crown &amp; Blade Barbers">
-  <meta property="og:description" content="Cuts, skin fades and beard trims. Walk-ins welcome. Book on WhatsApp.">
-  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='22' fill='black'/%3E%3Ctext x='50' y='70' font-size='62' font-weight='700' text-anchor='middle' fill='white' font-family='Arial,sans-serif'%3EC%3C/text%3E%3C/svg%3E">
+  <meta property="og:title" content="Noir Barbers">
+  <meta property="og:description" content="Precision cuts, hot towel shaves and beard sculpting. Book on WhatsApp.">
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='22' fill='black'/%3E%3Ctext x='50' y='70' font-size='62' font-weight='700' text-anchor='middle' fill='white' font-family='Arial,sans-serif'%3EN%3C/text%3E%3C/svg%3E">
 
   <!-- Helps Google show your hours, address and phone in search results -->
   <script type="application/ld+json">
   {
     "@context": "https://schema.org",
     "@type": "HairSalon",
-    "name": "Crown & Blade Barbers",
-    "description": "Cuts, skin fades, beard trims and hot towel shaves.",
+    "name": "Noir Barbers",
+    "description": "Precision cuts, skin fades, hot towel shaves and beard sculpting.",
     "telephone": "+27000000000",
-    "priceRange": "R60-R130",
+    "priceRange": "R180-R450",
     "address": {
       "@type": "PostalAddress",
-      "streetAddress": "123 Main Road",
-      "addressLocality": "Your City",
+      "streetAddress": "12 Long Street",
+      "addressLocality": "Cape Town",
+      "postalCode": "8001",
       "addressCountry": "ZA"
     },
     "openingHoursSpecification": [
-      { "@type": "OpeningHoursSpecification", "dayOfWeek": ["Monday","Tuesday","Wednesday","Thursday","Friday"], "opens": "08:00", "closes": "18:00" },
+      { "@type": "OpeningHoursSpecification", "dayOfWeek": ["Monday","Tuesday","Wednesday"], "opens": "09:00", "closes": "18:00" },
+      { "@type": "OpeningHoursSpecification", "dayOfWeek": ["Thursday","Friday"], "opens": "09:00", "closes": "20:00" },
       { "@type": "OpeningHoursSpecification", "dayOfWeek": "Saturday", "opens": "08:00", "closes": "16:00" }
     ]
   }
@@ -57,12 +61,13 @@
   <style>
     /* ===== DESIGN TOKENS: change the whole look here ===== */
     :root {
-      --bg: #000;
-      --text: #fff;
-      --muted: #a1a1a6;   /* grey: secondary text */
-      --line: #2c2c2e;    /* grey: dividers */
+      --bg: #fff;
+      --text: #0a0a0a;
+      --muted: #6b6b6b;   /* grey: secondary text */
+      --soft: #f5f5f5;    /* light grey: alternate section background */
+      --line: #e3e3e3;    /* grey: dividers */
       --font: -apple-system, BlinkMacSystemFont, "SF Pro Display", "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
-      --wrap: 1080px;
+      --wrap: 1152px;
     }
 
     /* ===== BASE ===== */
@@ -76,84 +81,128 @@
       font: 400 19px/1.55 var(--font);
       -webkit-font-smoothing: antialiased;
     }
-    h1, h2, p { margin: 0; }
+    h1, h2, h3, p { margin: 0; }
     a { color: inherit; }
     :focus-visible { outline: 2px solid var(--text); outline-offset: 4px; }
-    .wrap { width: min(100% - 40px, var(--wrap)); margin-inline: auto; }
+    .wrap { width: min(100% - 48px, var(--wrap)); margin-inline: auto; }
     .sr { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
     .skip { position: absolute; left: -999px; top: 8px; z-index: 100; padding: 10px 16px; border-radius: 999px; background: var(--text); color: var(--bg); font-weight: 600; }
     .skip:focus { left: 8px; }
 
     /* ===== BUTTONS ===== */
     .btn {
-      display: inline-block;
-      padding: 15px 30px;
+      display: inline-flex; align-items: center; justify-content: center; gap: 12px;
+      padding: 16px 32px;
       border: 1px solid var(--text);
       border-radius: 999px;
-      font-size: 17px;
-      font-weight: 600;
+      font-size: 18px;
+      font-weight: 500;
       text-decoration: none;
       text-align: center;
-      transition: opacity 0.15s ease, border-color 0.15s ease;
+      transition: transform 0.2s ease, background-color 0.2s ease, color 0.2s ease;
     }
     .btn-primary { background: var(--text); color: var(--bg); }
-    .btn-primary:hover { opacity: 0.85; }
-    .btn-ghost { border-color: var(--line); background: transparent; color: var(--text); }
-    .btn-ghost:hover { border-color: var(--muted); }
-    .btn-sm { padding: 9px 20px; font-size: 15px; }
+    .btn-primary:hover { transform: scale(1.03); }
+    .btn-ghost { border-color: transparent; background: transparent; color: var(--text); }
+    .btn-ghost:hover { background: var(--soft); }
+    .btn-outline { border-color: var(--line); background: transparent; color: var(--text); }
+    .btn-outline:hover { background: var(--soft); }
+    .btn-sm { padding: 8px 18px; border: 0; font-size: 14px; }
 
     /* ===== DEMO STRIP (delete for a real client) ===== */
     .demo { padding: 10px 16px; border-bottom: 1px solid var(--line); color: var(--muted); font-size: 14px; text-align: center; }
     .demo a { color: var(--text); text-underline-offset: 3px; }
 
     /* ===== HEADER ===== */
-    .site-header { position: sticky; top: 0; z-index: 50; background: rgba(0, 0, 0, 0.94); border-bottom: 1px solid var(--line); }
-    .bar { display: flex; align-items: center; justify-content: space-between; gap: 16px; padding: 14px 0; }
-    .logo { font-size: 21px; font-weight: 700; letter-spacing: -0.01em; text-decoration: none; }
-    .nav { display: flex; align-items: center; gap: 30px; }
-    .nav a:not(.btn) { color: var(--muted); font-size: 16px; text-decoration: none; }
+    .site-header {
+      position: sticky; top: 0; z-index: 50;
+      background: rgba(255, 255, 255, 0.78);
+      -webkit-backdrop-filter: saturate(180%) blur(20px);
+      backdrop-filter: saturate(180%) blur(20px);
+      border-bottom: 1px solid var(--line);
+    }
+    .bar { display: flex; align-items: center; justify-content: space-between; gap: 16px; height: 56px; }
+    .logo { font-size: 16px; font-weight: 600; letter-spacing: -0.01em; text-decoration: none; }
+    .nav { display: flex; align-items: center; gap: 32px; }
+    .nav a:not(.btn) { color: var(--muted); font-size: 15px; text-decoration: none; transition: color 0.2s ease; }
     .nav a:not(.btn):hover { color: var(--text); }
 
     /* ===== SECTIONS ===== */
-    section { padding: clamp(72px, 10vw, 128px) 0; scroll-margin-top: 72px; }
-    section + section { border-top: 1px solid var(--line); }
-    h2 { font-size: clamp(36px, 6vw, 64px); font-weight: 700; line-height: 1.05; letter-spacing: -0.03em; text-wrap: balance; }
+    section { padding: clamp(80px, 11vw, 128px) 0; scroll-margin-top: 72px; }
+    h2 { font-size: clamp(44px, 7vw, 72px); font-weight: 600; line-height: 1; letter-spacing: -0.05em; }
+    .sub { margin-top: 16px; color: var(--muted); font-size: clamp(20px, 2.4vw, 24px); }
 
     /* ===== HERO ===== */
-    .hero { padding: clamp(80px, 15vw, 176px) 0 clamp(72px, 11vw, 136px); }
-    .hero h1 { max-width: 10ch; font-size: clamp(52px, 11vw, 128px); font-weight: 700; line-height: 0.98; letter-spacing: -0.045em; text-wrap: balance; }
-    .lead { margin-top: 28px; color: var(--muted); font-size: clamp(20px, 2.4vw, 26px); }
-    .actions { display: flex; flex-wrap: wrap; gap: 14px; margin-top: 40px; }
+    .hero {
+      display: flex; flex-direction: column; align-items: center; justify-content: center;
+      min-height: calc(100svh - 100px);
+      padding: clamp(56px, 9vw, 96px) 24px;
+      text-align: center;
+    }
+    .eyebrow { color: var(--muted); font-size: 14px; font-weight: 500; letter-spacing: 0.3em; text-transform: uppercase; }
+    .hero h1 { margin-top: 24px; font-size: clamp(60px, 15vw, 144px); font-weight: 600; line-height: 0.95; letter-spacing: -0.05em; }
+    .hero h1 span { color: var(--muted); }
+    .lead { max-width: 36ch; margin-top: 32px; color: var(--muted); font-size: clamp(20px, 2.6vw, 24px); }
+    .actions { display: flex; flex-wrap: wrap; justify-content: center; gap: 16px; margin-top: 40px; }
+    .hero .eyebrow, .hero h1, .hero .lead, .hero .actions { animation: fade-up 0.9s cubic-bezier(0.2, 0.7, 0.2, 1) both; }
+    @keyframes fade-up { from { opacity: 0; transform: translateY(24px); } to { opacity: 1; transform: none; } }
+    @media (prefers-reduced-motion: reduce) { .hero .eyebrow, .hero h1, .hero .lead, .hero .actions { animation: none; } }
+
+    /* ===== PHOTO ===== */
+    .photo { padding: 0 0 clamp(80px, 11vw, 128px); }
+    .photo .wrap { overflow: hidden; border-radius: 32px; }
+    .photo img { display: block; width: 100%; height: clamp(320px, 60vh, 720px); object-fit: cover; }
+
+    /* ===== STATEMENT ===== */
+    .statement { padding-top: 0; }
+    .statement p { max-width: 1024px; font-size: clamp(32px, 5.5vw, 60px); font-weight: 600; line-height: 1.15; letter-spacing: -0.03em; text-wrap: balance; }
+    .statement span { color: var(--muted); }
 
     /* ===== SERVICES & PRICES ===== */
-    .price-list { margin: clamp(32px, 5vw, 56px) 0 0; padding: 0; list-style: none; }
+    .services { background: var(--soft); }
+    .price-list { margin: clamp(40px, 6vw, 64px) 0 0; padding: 0; list-style: none; border-top: 1px solid var(--line); }
     .price-list li {
-      display: grid; grid-template-columns: 1fr auto; gap: 4px 24px;
-      padding: 28px 0; border-top: 1px solid var(--line);
+      display: grid; grid-template-columns: 1fr auto; align-items: baseline; gap: 8px 16px;
+      padding: 32px 0; border-bottom: 1px solid var(--line);
     }
-    .price-list li:last-child { border-bottom: 1px solid var(--line); }
-    .price-list b { font-size: clamp(22px, 3vw, 30px); font-weight: 700; letter-spacing: -0.02em; }
-    .price-list span { font-size: clamp(22px, 3vw, 30px); font-weight: 700; letter-spacing: -0.02em; white-space: nowrap; }
-    .price-list small { grid-column: 1; color: var(--muted); font-size: 17px; }
-
-    /* ===== ABOUT ===== */
-    .about p { max-width: 30ch; margin-top: 28px; color: var(--muted); font-size: clamp(22px, 3vw, 30px); line-height: 1.35; letter-spacing: -0.01em; }
-    .about p b { color: var(--text); font-weight: 600; }
+    .price-list h3 { font-size: clamp(24px, 3.2vw, 30px); font-weight: 600; letter-spacing: -0.02em; line-height: 1.2; }
+    .price-list p { grid-column: 1 / -1; grid-row: 2; color: var(--muted); font-size: 18px; }
+    .price-list .time { display: none; color: var(--muted); font-size: 17px; }
+    .price { font-size: clamp(24px, 3.2vw, 30px); font-weight: 600; font-variant-numeric: tabular-nums; white-space: nowrap; }
+    @media (min-width: 768px) {
+      .price-list li { grid-template-columns: 2fr 3fr 1fr auto; gap: 16px; }
+      .price-list p { grid-column: auto; grid-row: auto; }
+      .price-list .time { display: block; }
+    }
 
     /* ===== HOURS & LOCATION ===== */
-    .info { display: grid; grid-template-columns: 1fr 1fr; gap: clamp(48px, 8vw, 112px); }
-    .hours { width: 100%; margin-top: 32px; border-collapse: collapse; font-size: clamp(19px, 2.2vw, 22px); }
-    .hours th, .hours td { padding: 16px 0; border-top: 1px solid var(--line); font-weight: 400; text-align: left; }
-    .hours tr:last-child th, .hours tr:last-child td { border-bottom: 1px solid var(--line); }
-    .hours th { font-weight: 600; }
-    .hours td { color: var(--muted); text-align: right; }
-    address { margin-top: 32px; color: var(--muted); font-size: clamp(19px, 2.2vw, 22px); font-style: normal; }
-    .contact { display: grid; gap: 6px; margin: 20px 0 32px; padding: 0; font-size: clamp(19px, 2.2vw, 22px); list-style: none; }
-    .contact span { color: var(--muted); }
-    .contact a { font-weight: 600; text-underline-offset: 4px; }
+    .info { display: grid; grid-template-columns: 1fr; gap: 64px; }
+    @media (min-width: 768px) { .info { grid-template-columns: 1fr 1fr; } }
+    address { margin-top: 40px; font-size: 19px; font-style: normal; }
+    address span { color: var(--muted); }
+    .info .btn { margin-top: 32px; }
+    .hours { width: 100%; border-collapse: collapse; font-size: clamp(20px, 2.4vw, 24px); }
+    .hours th, .hours td { padding: 20px 0; border-bottom: 1px solid var(--line); font-weight: 400; text-align: left; }
+    .hours tr:first-child th, .hours tr:first-child td { border-top: 1px solid var(--line); }
+    .hours th, .hours td { color: var(--muted); }
+    .hours td { text-align: right; font-variant-numeric: tabular-nums; }
+    .hours .today th, .hours .today td { color: var(--text); font-weight: 600; }
+    .badge { display: none; margin-left: 12px; padding: 2px 10px; border-radius: 999px; background: var(--text); color: var(--bg); font-size: 12px; font-weight: 500; vertical-align: middle; }
+    .today .badge { display: inline-block; }
+
+    /* ===== BOOKING ===== */
+    .book { padding: clamp(96px, 14vw, 160px) 0; background: var(--text); color: var(--bg); text-align: center; }
+    .book h2 { max-width: 12ch; margin-inline: auto; font-size: clamp(48px, 10vw, 96px); line-height: 0.95; text-wrap: balance; }
+    .book .sub { max-width: 32ch; margin: 32px auto 0; color: rgba(255, 255, 255, 0.62); }
+    .book .btn-primary { margin-top: 48px; padding: 20px 40px; border-color: var(--bg); background: var(--bg); color: var(--text); }
+    .book .btn svg { width: 24px; height: 24px; flex: none; }
+    .book :focus-visible { outline-color: var(--bg); }
+    .pills { display: flex; flex-wrap: wrap; justify-content: center; gap: 12px; max-width: 672px; margin: 64px auto 0; padding: 0; list-style: none; }
+    .pills a { display: block; padding: 8px 20px; border: 1px solid rgba(255, 255, 255, 0.28); border-radius: 999px; font-size: 15px; text-decoration: none; transition: background-color 0.2s ease, color 0.2s ease; }
+    .pills a:hover { background: var(--bg); color: var(--text); }
 
     /* ===== FOOTER ===== */
-    .site-footer { padding: 40px 0 48px; border-top: 1px solid var(--line); color: var(--muted); font-size: 14px; }
+    .site-footer { padding: 48px 0; color: var(--muted); font-size: 14px; }
     .foot { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 12px; }
     .foot a { text-underline-offset: 3px; }
 
@@ -161,19 +210,19 @@
     .mobile-bar { display: none; }
 
     /* ===== RESPONSIVE ===== */
-    @media (max-width: 760px) {
-      .info { grid-template-columns: 1fr; }
-    }
     @media (max-width: 720px) {
-      .nav { display: none; }
+      .nav a:not(.btn) { display: none; }
       .mobile-bar {
         position: fixed; inset: auto 0 0 0; z-index: 60;
         display: grid; grid-template-columns: 1fr 1fr; gap: 10px;
         padding: 10px 14px calc(10px + env(safe-area-inset-bottom));
         border-top: 1px solid var(--line);
-        background: rgba(0, 0, 0, 0.96);
+        background: rgba(255, 255, 255, 0.94);
+        -webkit-backdrop-filter: blur(16px);
+        backdrop-filter: blur(16px);
       }
-      .mobile-bar .btn { padding: 14px 10px; }
+      .mobile-bar .btn { padding: 14px 10px; font-size: 17px; }
+      .mobile-bar .btn-outline { border-color: var(--line); }
       .site-footer { padding-bottom: 104px; }
     }
   </style>
@@ -188,12 +237,12 @@
 
   <header class="site-header">
     <div class="wrap bar">
-      <a class="logo" href="#top" aria-label="Crown &amp; Blade Barbers, back to top">Crown &amp; Blade</a>
+      <a class="logo" href="#top" aria-label="Noir Barbers, back to top">NOIR</a>
       <nav class="nav" aria-label="Main">
         <a href="#services">Services</a>
-        <a href="#about">About</a>
         <a href="#hours">Hours</a>
-        <a class="btn btn-primary btn-sm" href="https://wa.me/27000000000?text=Hi%20Crown%20%26%20Blade%2C%20I%27d%20like%20to%20book%20a%20haircut.">Book now</a>
+        <a href="#book">Book</a>
+        <a class="btn btn-primary btn-sm" href="https://wa.me/27000000000?text=Hi%2C%20I%27d%20like%20to%20book%20an%20appointment.">Book now</a>
       </nav>
     </div>
   </header>
@@ -202,36 +251,41 @@
 
     <!-- HERO -->
     <section class="hero">
-      <div class="wrap">
-        <h1>Sharp cuts. Clean lines.</h1>
-        <p class="lead">Walk-ins welcome. Book on WhatsApp.</p>
-        <div class="actions">
-          <a class="btn btn-primary" href="https://wa.me/27000000000?text=Hi%20Crown%20%26%20Blade%2C%20I%27d%20like%20to%20book%20a%20haircut.">Book on WhatsApp</a>
-          <a class="btn btn-ghost" href="#services">Prices</a>
-        </div>
+      <p class="eyebrow">Est. 2026 &middot; Barbershop</p>
+      <h1>Sharp.<br>Simple.<br><span>Yours.</span></h1>
+      <p class="lead">Precision cuts and classic shaves, done with obsessive attention to detail.</p>
+      <div class="actions">
+        <a class="btn btn-primary" href="#book">Book an appointment</a>
+        <a class="btn btn-ghost" href="#services">View services &rsaquo;</a>
       </div>
     </section>
 
-    <!-- SERVICES & PRICES: edit names, descriptions and prices -->
-    <section id="services">
+    <!-- PHOTO: replace hero.webp with a real photo of the shop (keep it under 100 KB) -->
+    <section class="photo" aria-label="Photo">
       <div class="wrap">
-        <h2>Services</h2>
+        <img src="hero.webp" width="1600" height="907" loading="lazy" decoding="async" alt="A barber giving a straight razor shave">
+      </div>
+    </section>
+
+    <!-- STATEMENT -->
+    <section class="statement">
+      <div class="wrap">
+        <p>No noise. No rush. <span>Just a great cut, a hot towel, and the quiet confidence of looking your best.</span></p>
+      </div>
+    </section>
+
+    <!-- SERVICES & PRICES: edit names, descriptions, times and prices -->
+    <section id="services" class="services">
+      <div class="wrap">
+        <h2>Services.</h2>
+        <p class="sub">Everything you need. Nothing you don&rsquo;t.</p>
         <ul class="price-list">
-          <li><b>Classic Cut</b><span>R90</span><small>Scissor or clipper cut, hot towel finish.</small></li>
-          <li><b>Skin Fade</b><span>R120</span><small>Low, mid or high, blended to the skin.</small></li>
-          <li><b>Beard Trim</b><span>R60</span><small>Shape-up and line-up.</small></li>
-          <li><b>Cut + Beard</b><span>R130</span><small>Both, for R20 less.</small></li>
-          <li><b>Kids Cut</b><span>R70</span><small>Under 12.</small></li>
-          <li><b>Hot Towel Shave</b><span>R80</span><small>Straight razor, hot towel and balm.</small></li>
+          <li><h3>The Cut</h3><p>Consultation, precision cut, wash &amp; style.</p><span class="time">45 min</span><span class="price">R250</span></li>
+          <li><h3>Skin Fade</h3><p>Seamless fade, finished with a razor line-up.</p><span class="time">50 min</span><span class="price">R280</span></li>
+          <li><h3>Hot Towel Shave</h3><p>Straight razor, hot towels, cold finish.</p><span class="time">40 min</span><span class="price">R220</span></li>
+          <li><h3>Beard Sculpt</h3><p>Shape, trim, line-up and conditioning oil.</p><span class="time">30 min</span><span class="price">R180</span></li>
+          <li><h3>The Full Service</h3><p>Cut, shave and beard. The works.</p><span class="time">90 min</span><span class="price">R450</span></li>
         </ul>
-      </div>
-    </section>
-
-    <!-- ABOUT -->
-    <section id="about" class="about">
-      <div class="wrap">
-        <h2>About</h2>
-        <p><b>Crown &amp; Blade is a neighbourhood barbershop.</b> A great haircut should be consistent, on time and worth coming back for.</p>
       </div>
     </section>
 
@@ -239,25 +293,44 @@
     <section id="hours">
       <div class="wrap info">
         <div>
-          <h2>Hours</h2>
-          <table class="hours">
-            <caption class="sr">Opening hours</caption>
-            <tbody>
-              <tr><th scope="row">Mon &ndash; Fri</th><td>08:00 &ndash; 18:00</td></tr>
-              <tr><th scope="row">Saturday</th><td>08:00 &ndash; 16:00</td></tr>
-              <tr><th scope="row">Sunday</th><td>Closed</td></tr>
-            </tbody>
-          </table>
+          <h2>Hours.</h2>
+          <p class="sub">Walk-ins welcome. Appointments preferred.</p>
+          <address>12 Long Street<br><span>Cape Town, 8001</span></address>
+          <a class="btn btn-outline" href="https://www.google.com/maps/search/?api=1&amp;query=12+Long+Street+Cape+Town" rel="noopener">Get directions</a>
         </div>
-        <div>
-          <h2>Find us</h2>
-          <address>123 Main Road, Your Suburb<br>Your City</address>
-          <ul class="contact">
-            <li><span>WhatsApp</span> <a href="https://wa.me/27000000000">+27 00 000 0000</a></li>
-            <li><span>Call</span> <a href="tel:+27000000000">+27 00 000 0000</a></li>
-          </ul>
-          <a class="btn btn-ghost" href="https://www.google.com/maps/search/?api=1&amp;query=123+Main+Road+Your+City" rel="noopener">Get directions</a>
-        </div>
+        <!-- data-day must stay in English: the script below uses it to find today's row -->
+        <table class="hours">
+          <caption class="sr">Opening hours</caption>
+          <tbody>
+            <tr data-day="Monday"><th scope="row">Monday<span class="badge">Today</span></th><td>09:00 &ndash; 18:00</td></tr>
+            <tr data-day="Tuesday"><th scope="row">Tuesday<span class="badge">Today</span></th><td>09:00 &ndash; 18:00</td></tr>
+            <tr data-day="Wednesday"><th scope="row">Wednesday<span class="badge">Today</span></th><td>09:00 &ndash; 18:00</td></tr>
+            <tr data-day="Thursday"><th scope="row">Thursday<span class="badge">Today</span></th><td>09:00 &ndash; 20:00</td></tr>
+            <tr data-day="Friday"><th scope="row">Friday<span class="badge">Today</span></th><td>09:00 &ndash; 20:00</td></tr>
+            <tr data-day="Saturday"><th scope="row">Saturday<span class="badge">Today</span></th><td>08:00 &ndash; 16:00</td></tr>
+            <tr data-day="Sunday"><th scope="row">Sunday<span class="badge">Today</span></th><td>Closed</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- BOOKING -->
+    <section id="book" class="book">
+      <div class="wrap">
+        <h2>Your chair is waiting.</h2>
+        <p class="sub">Message us on WhatsApp. We&rsquo;ll confirm your slot in minutes.</p>
+        <a class="btn btn-primary" href="https://wa.me/27000000000?text=Hi%2C%20I%27d%20like%20to%20book%20an%20appointment.">
+          <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M17.47 14.38c-.3-.15-1.76-.87-2.03-.97-.27-.1-.47-.15-.67.15-.2.3-.77.97-.94 1.17-.17.2-.35.22-.65.07-.3-.15-1.26-.46-2.4-1.48-.89-.79-1.49-1.77-1.66-2.07-.17-.3-.02-.46.13-.61.13-.13.3-.35.45-.52.15-.17.2-.3.3-.5.1-.2.05-.37-.02-.52-.08-.15-.67-1.62-.92-2.22-.24-.58-.49-.5-.67-.51h-.57c-.2 0-.52.07-.8.37-.27.3-1.04 1.02-1.04 2.48s1.07 2.88 1.21 3.08c.15.2 2.1 3.2 5.08 4.49.71.31 1.26.49 1.69.63.71.22 1.36.19 1.87.12.57-.09 1.76-.72 2-1.41.25-.7.25-1.29.17-1.41-.07-.13-.27-.2-.57-.35M12.05 21.5h-.01a9.4 9.4 0 0 1-4.8-1.32l-.34-.2-3.57.94.95-3.48-.22-.36a9.4 9.4 0 0 1-1.44-5.02c0-5.2 4.23-9.43 9.44-9.43a9.4 9.4 0 0 1 9.43 9.44c0 5.2-4.23 9.43-9.44 9.43m8.03-17.47A11.3 11.3 0 0 0 12.05.7C5.79.7.7 5.79.7 12.05c0 2 .52 3.95 1.52 5.67L.6 23.3l5.72-1.5a11.3 11.3 0 0 0 5.72 1.46h.01c6.26 0 11.35-5.1 11.35-11.35 0-3.03-1.18-5.88-3.32-8.02"/></svg>
+          Book on WhatsApp
+        </a>
+        <!-- One button per service: each opens WhatsApp with that service already typed in -->
+        <ul class="pills">
+          <li><a href="https://wa.me/27000000000?text=Hi%2C%20I%27d%20like%20to%20book%20a%20The%20Cut.">The Cut</a></li>
+          <li><a href="https://wa.me/27000000000?text=Hi%2C%20I%27d%20like%20to%20book%20a%20Skin%20Fade.">Skin Fade</a></li>
+          <li><a href="https://wa.me/27000000000?text=Hi%2C%20I%27d%20like%20to%20book%20a%20Hot%20Towel%20Shave.">Hot Towel Shave</a></li>
+          <li><a href="https://wa.me/27000000000?text=Hi%2C%20I%27d%20like%20to%20book%20a%20Beard%20Sculpt.">Beard Sculpt</a></li>
+          <li><a href="https://wa.me/27000000000?text=Hi%2C%20I%27d%20like%20to%20book%20The%20Full%20Service.">The Full Service</a></li>
+        </ul>
       </div>
     </section>
 
@@ -265,15 +338,27 @@
 
   <footer class="site-footer">
     <div class="wrap foot">
-      <p>&copy; 2026 Crown &amp; Blade Barbers</p>
+      <p>&copy; 2026 Noir Barbers. All rights reserved.</p>
       <p>Website template by <a href="/">Siya</a></p>
     </div>
   </footer>
 
   <!-- Sticky bar for phones: the two actions customers want most -->
   <div class="mobile-bar">
-    <a class="btn btn-primary" href="https://wa.me/27000000000?text=Hi%20Crown%20%26%20Blade%2C%20I%27d%20like%20to%20book%20a%20haircut.">WhatsApp</a>
-    <a class="btn btn-ghost" href="tel:+27000000000">Call</a>
+    <a class="btn btn-primary" href="https://wa.me/27000000000?text=Hi%2C%20I%27d%20like%20to%20book%20an%20appointment.">WhatsApp</a>
+    <a class="btn btn-outline" href="tel:+27000000000">Call</a>
   </div>
+
+  <!-- Marks today's row in the opening hours. Uses the SHOP's time zone, so visitors anywhere see the right day. -->
+  <script>
+    (function () {
+      var SHOP_TZ = "Africa/Johannesburg"; // change to the shop's time zone, e.g. "Europe/London"
+      try {
+        var day = new Date().toLocaleDateString("en-US", { weekday: "long", timeZone: SHOP_TZ });
+        var row = document.querySelector('tr[data-day="' + day + '"]');
+        if (row) row.className = "today";
+      } catch (e) { /* no highlight if the browser can't do it; the page still works */ }
+    })();
+  </script>
 </body>
 </html>
