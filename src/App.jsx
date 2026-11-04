@@ -1,69 +1,97 @@
 import { useState, useEffect, useRef, useCallback } from "react";
+import barberShot from "./assets/templates/barber.webp";
+import salonShot from "./assets/templates/salon.webp";
+import workshopShot from "./assets/templates/workshop.webp";
+import cafeShot from "./assets/templates/cafe.webp";
 
-import pose1 from "./assets/photos/pose1.png";
-import pose2 from "./assets/photos/pose2.png";
-import pose3 from "./assets/photos/pose3.png";
+/* =========================================================
+   CONTENT: edit your text, prices and templates here
+   ========================================================= */
+const NAME = "Siya";
+const LOCATION = "South Africa";
+const AGE = 20;
+const CONTACT_EMAIL = "workMail_Siya@proton.me";
+const FORM_URL = "https://formspree.io/f/meaarzar";
 
-const NAME = "EDMUND";
-const POSES = [
-  { label: "01", src: pose1 },
-  { label: "02", src: pose2 },
-  { label: "03", src: pose3 },
+// All prices are in USD.
+const PRICES = [
+  { name: "Starter", detail: "One-page website", price: "from $150" },
+  { name: "Standard", detail: "Multi-section website", price: "from $300" },
+  { name: "Custom", detail: "Bespoke design, motion and 3D", price: "from $600" },
+  { name: "Care plan", detail: "Hosting, updates and small changes", price: "$20 / month" },
 ];
 
-function useCrossfade(count, interval = 3200) {
-  const [index, setIndex] = useState(0);
-  useEffect(() => {
-    const id = setInterval(() => setIndex((i) => (i + 1) % count), interval);
-    return () => clearInterval(id);
-  }, [count, interval]);
-  return index;
-}
+// One object per template. Replace the placeholder with your real ones.
+// - liveUrl: link to the live demo (leave "" and the row shows "Coming soon")
+// - image: optional preview, e.g. import shot from "./assets/templates/barber.png"
+const TEMPLATES = [
+  {
+    name: "Barbershop",
+    description:
+      "One-page site for barbers: services and prices, opening hours with a live “Today” marker, directions and WhatsApp booking. One fast HTML file and one photo.",
+    tags: ["HTML", "CSS", "Responsive", "SEO-ready"],
+    liveUrl: "/templates/barber/",
+    image: barberShot,
+  },
+  {
+    name: "Hair salon",
+    description:
+      "One-page site for salons: services with from-prices, hours, directions and WhatsApp booking. Same fast, no-JavaScript build.",
+    tags: ["HTML", "CSS", "Responsive", "SEO-ready"],
+    liveUrl: "/templates/salon/",
+    image: salonShot,
+  },
+  {
+    name: "Auto workshop",
+    description:
+      "One-page site for mechanics: services and prices, hours, directions and a get-a-quote button that opens WhatsApp.",
+    tags: ["HTML", "CSS", "Responsive", "SEO-ready"],
+    liveUrl: "/templates/workshop/",
+    image: workshopShot,
+  },
+  {
+    name: "Café",
+    description:
+      "One-page site for cafés and takeaways: menu with prices, hours, directions and WhatsApp ordering.",
+    tags: ["HTML", "CSS", "Responsive", "SEO-ready"],
+    liveUrl: "/templates/cafe/",
+    image: cafeShot,
+  },
+];
 
-function useIsMobile() {
-  const [isMobile, setIsMobile] = useState(false);
-  useEffect(() => {
-    const check = () => setIsMobile(window.innerWidth < 760);
-    check();
-    window.addEventListener("resize", check);
-    return () => window.removeEventListener("resize", check);
-  }, []);
-  return isMobile;
-}
-
-function WaveBackground() {
-  // Smoothly moving wave-line field, canvas-based, seamless and cheap.
+/* =========================================================
+   BACKGROUND: soft moving wave lines (canvas)
+   ========================================================= */
+function WaveBackground({ animate }) {
   const canvasRef = useRef(null);
-  const rafRef = useRef(null);
+  const ctrl = useRef({ start() {}, stop() {} });
 
   useEffect(() => {
     const canvas = canvasRef.current;
     const ctx = canvas.getContext("2d");
-    let w, h, dpr;
-    let t = 0;
+    const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    const FRAME_MS = 1000 / 30; // slow waves look smooth at 30fps and cost half as much
+    let w, h, raf = 0, t = 0, last = 0, running = false, resizeTimer;
 
     function resize() {
-      dpr = Math.min(window.devicePixelRatio || 1, 2);
+      // 1x pixel ratio on purpose: the lines are thin and faint, so retina detail
+      // would only multiply the drawing cost for no visible gain
       w = canvas.clientWidth;
       h = canvas.clientHeight;
-      canvas.width = w * dpr;
-      canvas.height = h * dpr;
-      ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+      canvas.width = w;
+      canvas.height = h;
     }
-    resize();
-    window.addEventListener("resize", resize);
 
-    function draw() {
+    function render() {
       ctx.clearRect(0, 0, w, h);
-      t += 0.006;
       const rowSpacing = Math.max(34, h / 18);
       const rows = Math.ceil(h / rowSpacing) + 2;
+      const step = Math.max(16, w / 60);
       ctx.lineWidth = 1;
+      ctx.strokeStyle = "rgba(255,255,255,0.07)";
+      ctx.beginPath(); // one path and one stroke for all the lines
       for (let r = -1; r < rows; r++) {
         const baseY = r * rowSpacing;
-        ctx.beginPath();
-        ctx.strokeStyle = "rgba(245,245,245,0.10)";
-        const step = Math.max(10, w / 90);
         for (let x = -step; x <= w + step; x += step) {
           const y =
             baseY +
@@ -72,562 +100,302 @@ function WaveBackground() {
           if (x === -step) ctx.moveTo(x, y);
           else ctx.lineTo(x, y);
         }
-        ctx.stroke();
       }
-      rafRef.current = requestAnimationFrame(draw);
+      ctx.stroke();
     }
-    draw();
 
+    function loop(now) {
+      raf = requestAnimationFrame(loop);
+      const dt = now - last;
+      if (dt < FRAME_MS) return;
+      t += (Math.min(dt, 100) / 1000) * 0.36; // same speed as before at any frame rate
+      last = now;
+      render();
+    }
+
+    ctrl.current = {
+      start() {
+        if (running || reduceMotion) return;
+        running = true;
+        last = performance.now();
+        raf = requestAnimationFrame(loop);
+      },
+      stop() {
+        running = false;
+        cancelAnimationFrame(raf);
+      },
+    };
+
+    function onResize() {
+      clearTimeout(resizeTimer);
+      resizeTimer = setTimeout(() => {
+        resize();
+        render();
+      }, 120);
+    }
+
+    resize();
+    render();
+    window.addEventListener("resize", onResize);
     return () => {
-      window.removeEventListener("resize", resize);
-      cancelAnimationFrame(rafRef.current);
+      window.removeEventListener("resize", onResize);
+      clearTimeout(resizeTimer);
+      ctrl.current.stop();
     };
   }, []);
 
-  return <canvas ref={canvasRef} style={{ position: "absolute", inset: 0, width: "100%", height: "100%" }} />;
+  // animate only while it's wanted (not behind the contact form)
+  useEffect(() => {
+    if (animate) ctrl.current.start();
+    else ctrl.current.stop();
+  }, [animate]);
+
+  return <canvas ref={canvasRef} className="waves" aria-hidden="true" />;
 }
 
-function PhotoStack({ index, compact }) {
+/* =========================================================
+   PAGES
+   ========================================================= */
+function Page({ active, children }) {
+  return <section className={`page${active ? " is-active" : ""}`}>{children}</section>;
+}
+
+function HomePage({ active, onContact, onTemplates, year }) {
   return (
-    <div
-      style={{
-        position: "relative",
-        width: compact ? "clamp(180px, 42vw, 300px)" : "clamp(220px, 30vw, 380px)",
-        height: compact ? "clamp(230px, 54vw, 380px)" : "clamp(280px, 40vw, 480px)",
-        transition: "width 900ms cubic-bezier(.7,0,.2,1), height 900ms cubic-bezier(.7,0,.2,1)",
-      }}
-    >
-      {POSES.map((p, i) => (
-        <div
-          key={p.label}
-          style={{
-            position: "absolute",
-            inset: 0,
-            display: "flex",
-            alignItems: "flex-end",
-            justifyContent: "center",
-            opacity: i === index ? 1 : 0,
-            transition: "opacity 900ms ease",
-          }}
-        >
-          <img
-            src={p.src}
-            alt={`Edmund — pose ${p.label}`}
-            style={{
-              width: "100%",
-              height: "100%",
-              objectFit: "contain",
-              filter: "grayscale(100%) contrast(1.05)",
-              userSelect: "none",
-              pointerEvents: "none",
-            }}
-            draggable={false}
-          />
+    <Page active={active}>
+      <div className="page-inner page-inner--center home">
+        <h1 className="hero-title">Websites, made simple.</h1>
+        <p className="hero-sub">Web developer · {LOCATION}</p>
+        <div className="hero-actions">
+          <button className="btn btn--primary" onClick={onContact}>
+            Start a project
+          </button>
+          <button className="btn btn--ghost" onClick={onTemplates}>
+            See templates ›
+          </button>
         </div>
-      ))}
-    </div>
+      </div>
+      <p className="footer">© {year} {NAME}</p>
+    </Page>
   );
 }
 
-function AboutPhoto({ active, src }) {
-  const wrapRef = useRef(null);
-  const [tilt, setTilt] = useState({ x: 0, y: 0 });
-
-  const handleMove = (e) => {
-    const rect = wrapRef.current.getBoundingClientRect();
-    const px = (e.clientX - rect.left) / rect.width - 0.5;
-    const py = (e.clientY - rect.top) / rect.height - 0.5;
-    setTilt({ x: py * -10, y: px * 14 });
-  };
-
-  const handleLeave = () => setTilt({ x: 0, y: 0 });
-
+function AboutPage({ active }) {
   return (
-    <div
-      ref={wrapRef}
-      onMouseMove={handleMove}
-      onMouseLeave={handleLeave}
-      style={{
-        width: "100%",
-        height: "100%",
-        display: "flex",
-        alignItems: "center",
-        justifyContent: "center",
-        perspective: "800px",
-        opacity: active ? 1 : 0,
-        transition: "opacity 700ms ease 200ms",
-        pointerEvents: active ? "auto" : "none",
-      }}
-    >
-      <img
-        src={src}
-        alt="Edmund"
-        draggable={false}
-        style={{
-          maxWidth: "100%",
-          maxHeight: "100%",
-          objectFit: "contain",
-          filter: "grayscale(100%) contrast(1.08)",
-          transform: `rotateX(${tilt.x}deg) rotateY(${tilt.y}deg) scale(1.02)`,
-          transition: "transform 250ms ease-out",
-          userSelect: "none",
-        }}
-      />
-    </div>
+    <Page active={active}>
+      <div className="page-inner page-inner--center">
+        <h2 className="page-title about-title">Websites that are simple, fast and clear.</h2>
+
+        <div className="about-copy">
+          <p>
+            I'm {NAME}, a {AGE}-year-old web developer from {LOCATION}. I build clean,
+            mobile-friendly websites for small businesses, so customers can find you, trust you
+            and get in touch within seconds.
+          </p>
+          <p>
+            I use ready-made templates when you want to get online quickly and affordably, and
+            build fully custom when you need something that's only yours.
+          </p>
+        </div>
+
+        <div className="pricing">
+          <p className="eyebrow">Pricing</p>
+          {PRICES.map((p) => (
+            <div className="price-row" key={p.name}>
+              <div>
+                <div className="price-name">{p.name}</div>
+                <div className="price-detail">{p.detail}</div>
+              </div>
+              <div className="price-amount">{p.price}</div>
+            </div>
+          ))}
+          <p className="price-note">All prices in USD.</p>
+        </div>
+      </div>
+    </Page>
   );
 }
 
+function TemplatesPage({ active }) {
+  return (
+    <Page active={active}>
+      <div className="page-inner page-inner--top">
+        <h2 className="page-title">Templates</h2>
+        <p className="page-sub">Ready-made starting points for small business sites.</p>
+
+        <div className="tpl-list">
+          {TEMPLATES.map((t) => (
+            <article className="tpl-row" key={t.name}>
+              <div className="tpl-info">
+                <h3 className="tpl-name">{t.name}</h3>
+                <p className="tpl-desc">{t.description}</p>
+                <p className="tpl-tags">{t.tags.join(" · ")}</p>
+                {t.liveUrl ? (
+                  <a className="tpl-link" href={t.liveUrl} target="_blank" rel="noopener noreferrer">
+                    View live →
+                  </a>
+                ) : (
+                  <span className="tpl-soon">Coming soon</span>
+                )}
+              </div>
+              {t.image && (
+                // the preview is clickable too; the text link above serves keyboards and screen readers
+                <a
+                  className="tpl-shot"
+                  href={t.liveUrl || undefined}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  tabIndex={-1}
+                  aria-hidden="true"
+                >
+                  <img
+                    className="tpl-img"
+                    src={t.image}
+                    alt={`${t.name} template preview`}
+                    width="1200"
+                    height="750"
+                    loading="lazy"
+                    decoding="async"
+                  />
+                </a>
+              )}
+            </article>
+          ))}
+        </div>
+      </div>
+    </Page>
+  );
+}
+
+/* =========================================================
+   CONTACT MODAL
+   ========================================================= */
 function ContactModal({ email, onClose }) {
-  const [name, setName] = useState("");
-  const [replyTo, setReplyTo] = useState("");
-  const [message, setMessage] = useState("");
-
-  const inputStyle = {
-    width: "100%",
-    background: "rgba(245,245,245,0.06)",
-    border: "1px solid rgba(245,245,245,0.15)",
-    borderRadius: "10px",
-    padding: "12px 14px",
-    color: "#f5f5f5",
-    fontFamily: "'JetBrains Mono', monospace",
-    fontSize: "12.5px",
-    outline: "none",
-  };
-
   const [status, setStatus] = useState("idle"); // idle | sending | sent | error
+
+  useEffect(() => {
+    const onKey = (e) => {
+      if (e.key === "Escape") onClose();
+    };
+    window.addEventListener("keydown", onKey);
+    return () => window.removeEventListener("keydown", onKey);
+  }, [onClose]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     setStatus("sending");
     try {
-      const res = await fetch("https://formspree.io/f/xoeawqlg", {
+      const res = await fetch(FORM_URL, {
         method: "POST",
         headers: { Accept: "application/json" },
         body: new FormData(e.target),
       });
-      if (res.ok) {
-        setStatus("sent");
-      } else {
-        setStatus("error");
-      }
+      setStatus(res.ok ? "sent" : "error");
     } catch {
       setStatus("error");
     }
   };
 
+  const busy = status === "sending" || status === "sent";
+
   return (
-    <div
-      style={{
-        position: "fixed",
-        inset: 0,
-        zIndex: 100,
-        display: "flex",
-        alignItems: "center",
-        justifyContent: "center",
-        background: "rgba(0,0,0,0.6)",
-        backdropFilter: "blur(4px)",
-        padding: "20px",
-      }}
-      onClick={onClose}
-    >
+    <div className="overlay" onClick={onClose}>
       <form
+        className="modal"
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="contact-title"
         onClick={(e) => e.stopPropagation()}
         onSubmit={handleSubmit}
-        style={{
-          width: "100%",
-          maxWidth: "380px",
-          background: "rgba(245,245,245,0.06)",
-          backdropFilter: "blur(18px)",
-          WebkitBackdropFilter: "blur(18px)",
-          border: "1px solid rgba(245,245,245,0.14)",
-          borderRadius: "20px",
-          padding: "clamp(20px, 3vw, 28px)",
-          boxShadow: "0 20px 50px -12px rgba(0,0,0,0.8), 0 1px 0 rgba(245,245,245,0.08) inset",
-          display: "flex",
-          flexDirection: "column",
-          gap: "12px",
-        }}
       >
-        <div
-          style={{
-            display: "flex",
-            justifyContent: "space-between",
-            alignItems: "center",
-            marginBottom: "6px",
-          }}
-        >
-          <span
-            style={{
-              fontFamily: "'JetBrains Mono', monospace",
-              fontSize: "10px",
-              letterSpacing: "0.18em",
-              color: "rgba(245,245,245,0.4)",
-            }}
-          >
-            CONTACT
-          </span>
-          <button
-            type="button"
-            onClick={onClose}
-            className="nav-link"
-            style={{ padding: "0" }}
-          >
+        <div className="modal-head">
+          <h2 className="modal-title" id="contact-title">Get in touch</h2>
+          <button type="button" className="close" onClick={onClose} aria-label="Close">
             ✕
           </button>
         </div>
 
-        <input
-          name="name"
-          style={inputStyle}
-          placeholder="Your name"
-          value={name}
-          onChange={(e) => setName(e.target.value)}
-          required
-        />
-        <input
-          name="email"
-          style={inputStyle}
-          type="email"
-          placeholder="Your email (so I can reply)"
-          value={replyTo}
-          onChange={(e) => setReplyTo(e.target.value)}
-          required
-        />
-        <textarea
-          name="message"
-          style={{ ...inputStyle, minHeight: "100px", resize: "vertical", fontFamily: "'JetBrains Mono', monospace" }}
-          placeholder="What are you looking to build?"
-          value={message}
-          onChange={(e) => setMessage(e.target.value)}
-          required
-        />
+        <input className="field" name="name" placeholder="Your name" aria-label="Your name" autoComplete="name" required />
+        <input className="field" name="email" type="email" placeholder="Your email" aria-label="Your email" autoComplete="email" required />
+        <textarea className="field" name="message" placeholder="What are you looking to build?" aria-label="Message" required />
+        {/* spam trap: real people never see or fill this */}
+        <input className="hp" type="text" name="_gotcha" tabIndex={-1} autoComplete="off" aria-hidden="true" />
 
-        <button
-          type="submit"
-          disabled={status === "sending" || status === "sent"}
-          style={{
-            marginTop: "6px",
-            background: "#f5f5f5",
-            color: "#050505",
-            border: "none",
-            borderRadius: "999px",
-            padding: "12px",
-            fontFamily: "'Space Grotesk', sans-serif",
-            fontSize: "13px",
-            fontWeight: 500,
-            letterSpacing: "0.04em",
-            cursor: status === "sending" || status === "sent" ? "default" : "pointer",
-            opacity: status === "sending" ? 0.6 : 1,
-          }}
-        >
-          {status === "sending" ? "Sending…" : status === "sent" ? "Sent ✓" : "Send message →"}
+        <button className="btn btn--primary" type="submit" disabled={busy}>
+          {status === "sending" ? "Sending…" : status === "sent" ? "Sent ✓" : "Send message"}
         </button>
-        <span
-          style={{
-            fontFamily: "'JetBrains Mono', monospace",
-            fontSize: "10px",
-            color: status === "error" ? "rgba(255,120,120,0.8)" : "rgba(245,245,245,0.35)",
-            textAlign: "center",
-          }}
-        >
+        <p className={`modal-status${status === "error" ? " is-error" : ""}`}>
           {status === "sent"
-            ? "Message sent — I'll reply soon."
+            ? "Message sent. I'll reply soon."
             : status === "error"
-            ? "Something went wrong — try again, or email directly."
+            ? `Something went wrong. Try again, or email ${email} directly.`
             : `Goes straight to ${email}`}
-        </span>
+        </p>
       </form>
     </div>
   );
 }
 
+/* =========================================================
+   APP
+   ========================================================= */
 export default function Portfolio() {
-  const [page, setPage] = useState("home");
+  const [page, setPage] = useState("home"); // home | about | templates
   const [showContact, setShowContact] = useState(false);
-  const [transitioning, setTransitioning] = useState(false);
-  const poseIndex = useCrossfade(POSES.length);
-  const isMobile = useIsMobile();
-
-  const goAbout = useCallback(() => {
-    setTransitioning(true);
-    setPage("about");
-    setTimeout(() => setTransitioning(false), 950);
-  }, []);
-
-  const goHome = useCallback(() => {
-    setTransitioning(true);
-    setPage("home");
-    setTimeout(() => setTransitioning(false), 950);
-  }, []);
-
-  const isAbout = page === "about";
   const year = new Date().getFullYear();
+  const appRef = useRef(null);
+
+  // once a page has faded out, send it back to the top so it opens fresh next time
+  useEffect(() => {
+    const id = setTimeout(() => {
+      appRef.current?.querySelectorAll(".page:not(.is-active)").forEach((el) => {
+        el.scrollTop = 0;
+      });
+    }, 600);
+    return () => clearTimeout(id);
+  }, [page]);
+
+  const openContact = useCallback(() => setShowContact(true), []);
+  const closeContact = useCallback(() => setShowContact(false), []);
+
+  const link = (id, label) => (
+    <button className={`nav-link${page === id ? " is-current" : ""}`} onClick={() => setPage(id)}>
+      {label}
+    </button>
+  );
 
   return (
-    <div
-      style={{
-        position: "relative",
-        width: "100%",
-        height: "100vh",
-        minHeight: "560px",
-        background: "#050505",
-        overflow: "hidden",
-        fontFamily: "'JetBrains Mono', monospace",
-      }}
-    >
-      <style>{`
-        @import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;500;700&family=JetBrains+Mono:wght@300;400;500&display=swap');
-        * { box-sizing: border-box; }
-        .nav-link {
-          background: none;
-          border: none;
-          color: rgba(245,245,245,0.75);
-          font-family: 'JetBrains Mono', monospace;
-          font-size: 11px;
-          letter-spacing: 0.14em;
-          text-transform: uppercase;
-          cursor: pointer;
-          padding: 8px 4px;
-          transition: color 250ms ease;
-          white-space: nowrap;
-        }
-        .nav-link:hover { color: #f5f5f5; }
-        .nav-link:focus-visible { outline: 1px solid rgba(245,245,245,0.6); outline-offset: 3px; }
-        @media (max-width: 760px) {
-          .about-grid { grid-template-columns: 1fr !important; grid-template-rows: auto auto; gap: 18px; padding-top: 90px !important; overflow-y: auto; }
-          .about-head { height: min(34vh, 260px) !important; }
-        }
-      `}</style>
+    <div className="app" ref={appRef}>
+      <WaveBackground animate={!showContact} />
 
-      <WaveBackground />
-
-      {/* Nav */}
-      <div
-        style={{
-          position: "absolute",
-          top: "22px",
-          left: 0,
-          right: 0,
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "space-between",
-          gap: "14px",
-          zIndex: 10,
-          padding: "0 clamp(16px, 4vw, 40px)",
-          flexWrap: "wrap",
-        }}
-      >
-        <div
-          onClick={goHome}
-          role="button"
-          tabIndex={0}
-          onKeyDown={(e) => { if (e.key === "Enter" || e.key === " ") goHome(); }}
-          style={{
-            background: "rgba(245,245,245,0.05)",
-            backdropFilter: "blur(18px)",
-            WebkitBackdropFilter: "blur(18px)",
-            borderRadius: "999px",
-            padding: "10px 20px",
-            fontFamily: "'Space Grotesk', sans-serif",
-            fontSize: "13px",
-            letterSpacing: "0.08em",
-            color: "#f5f5f5",
-            cursor: "pointer",
-            boxShadow:
-              "0 10px 24px -6px rgba(0,0,0,0.9), 0 1px 0 rgba(245,245,245,0.08) inset, 0 -1px 0 rgba(0,0,0,0.3) inset",
-            border: "1px solid rgba(245,245,245,0.12)",
-          }}
-        >
+      <header className="nav">
+        <button className="brand" onClick={() => setPage("home")}>
           {NAME}
-        </div>
-
-        <div
-          style={{
-            display: "flex",
-            gap: "4px",
-            alignItems: "center",
-            background: "rgba(245,245,245,0.05)",
-            backdropFilter: "blur(18px)",
-            WebkitBackdropFilter: "blur(18px)",
-            borderRadius: "999px",
-            padding: "6px 16px",
-            border: "1px solid rgba(245,245,245,0.12)",
-            boxShadow:
-              "0 10px 24px -6px rgba(0,0,0,0.9), 0 1px 0 rgba(245,245,245,0.08) inset, 0 -1px 0 rgba(0,0,0,0.3) inset",
-          }}
-        >
-          {!isAbout && (
-            <button className="nav-link" onClick={goAbout}>
-              About
+        </button>
+        <nav className="nav-links">
+          {page !== "home" && (
+            <button className="nav-link nav-back" onClick={() => setPage("home")}>
+              ‹ Home
             </button>
           )}
-          {isAbout && (
-            <button className="nav-link" onClick={goHome}>
-              ← Back
-            </button>
-          )}
-          <span style={{ color: "rgba(245,245,245,0.2)", padding: "8px 0" }}>/</span>
-          <button className="nav-link" onClick={() => setShowContact(true)}>
+          {link("about", "About")}
+          {link("templates", "Templates")}
+          <button className="nav-link" onClick={openContact}>
             Contact
           </button>
-        </div>
-      </div>
+        </nav>
+      </header>
 
-      {/* HOME */}
-      <div
-        style={{
-          position: "absolute",
-          inset: 0,
-          display: "flex",
-          flexDirection: "column",
-          alignItems: "center",
-          justifyContent: "center",
-          paddingTop: "clamp(40px, 8vh, 90px)",
-          opacity: isAbout ? 0 : 1,
-          transform: isAbout ? "scale(0.96)" : "scale(1)",
-          transition: "opacity 700ms ease, transform 900ms cubic-bezier(.7,0,.2,1)",
-          pointerEvents: isAbout ? "none" : "auto",
-        }}
-      >
-        <div
-          style={{
-            fontFamily: "'Space Grotesk', sans-serif",
-            fontWeight: 700,
-            fontSize: "clamp(40px, 10vw, 120px)",
-            letterSpacing: "0.02em",
-            color: "rgba(245,245,245,0.9)",
-            whiteSpace: "nowrap",
-            userSelect: "none",
-            marginBottom: "clamp(8px, 3vh, 28px)",
-            textShadow: "0 0 40px rgba(245,245,245,0.15)",
-          }}
-        >
-          {NAME}
-        </div>
-        <PhotoStack index={poseIndex} compact={isMobile} />
-      </div>
+      <HomePage
+        active={page === "home"}
+        onContact={openContact}
+        onTemplates={() => setPage("templates")}
+        year={year}
+      />
+      <AboutPage active={page === "about"} />
+      <TemplatesPage active={page === "templates"} />
 
-      {/* ABOUT */}
-      <div
-        className="about-grid"
-        style={{
-          position: "absolute",
-          inset: 0,
-          display: isAbout || transitioning ? "grid" : "none",
-          gridTemplateColumns: "1fr 1fr",
-          alignItems: "center",
-          opacity: isAbout ? 1 : 0,
-          transition: "opacity 700ms ease 150ms",
-          padding: "0 6vw",
-        }}
-      >
-        <div
-          className="about-head"
-          style={{ height: "min(60vh, 480px)", display: "flex", alignItems: "center", justifyContent: "center" }}
-        >
-          <div style={{ width: "100%", height: "100%" }}>
-            <AboutPhoto active={isAbout} src={pose3} />
-          </div>
-        </div>
-
-        <div
-          style={{
-            color: "#f5f5f5",
-            maxWidth: "440px",
-            opacity: isAbout ? 1 : 0,
-            transform: isAbout ? "translateY(0)" : "translateY(12px)",
-            transition: "opacity 600ms ease 400ms, transform 600ms ease 400ms",
-            background: "rgba(245,245,245,0.05)",
-            backdropFilter: "blur(18px)",
-            WebkitBackdropFilter: "blur(18px)",
-            border: "1px solid rgba(245,245,245,0.12)",
-            borderRadius: "20px",
-            padding: "clamp(20px, 3vw, 32px)",
-            boxShadow:
-              "0 20px 50px -12px rgba(0,0,0,0.7), 0 1px 0 rgba(245,245,245,0.08) inset, 0 -1px 0 rgba(0,0,0,0.3) inset",
-          }}
-        >
-          <div
-            style={{
-              fontFamily: "'JetBrains Mono', monospace",
-              fontSize: "10px",
-              letterSpacing: "0.18em",
-              color: "rgba(245,245,245,0.4)",
-              marginBottom: "16px",
-            }}
-          >
-            ABOUT
-          </div>
-          <h2
-            style={{
-              fontFamily: "'Space Grotesk', sans-serif",
-              fontWeight: 500,
-              fontSize: "clamp(20px, 2.4vw, 30px)",
-              lineHeight: 1.25,
-              margin: "0 0 18px 0",
-            }}
-          >
-            I build websites that refuse to look ordinary.
-          </h2>
-          <p
-            style={{
-              fontFamily: "'JetBrains Mono', monospace",
-              fontSize: "12.5px",
-              lineHeight: 1.8,
-              color: "rgba(245,245,245,0.68)",
-              margin: "0 0 22px 0",
-            }}
-          >
-            I'm Edmund, a 20-year-old front-end developer focused on creating custom websites, motion and interactive experiences.
-            <br /><br />
-            Custom websites start at $500. Premium builds — custom motion, 3D, the kind of
-            detail this site has — start at $750.
-            <br /><br />
-            What makes a site of mine different is that I make sure the website is unique to you and your brand. I don't use templates, and I don't use pre-built components. 
-            Everything is built from scratch, so you get a site that is truly yours.
-          </p>
-          <div style={{ display: "flex", flexDirection: "column", gap: "8px" }}>
-            {["Standard sites — from $500", "Premium builds — from $750"].map(
-              (line) => (
-                <div key={line} style={{ display: "flex", alignItems: "center", gap: "10px" }}>
-                  <span style={{ width: "5px", height: "5px", background: "#f5f5f5", opacity: 0.5, flexShrink: 0 }} />
-                  <span style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: "12px", color: "rgba(245,245,245,0.8)" }}>
-                    {line}
-                  </span>
-                </div>
-              )
-            )}
-          </div>
-        </div>
-      </div>
-
-      {showContact && (
-        <ContactModal email="mr_siya@proton.me" onClose={() => setShowContact(false)} />
-      )}
-
-      {/* Footer / copyright */}
-      <div
-        style={{
-          position: "absolute",
-          bottom: "16px",
-          left: 0,
-          right: 0,
-          textAlign: "center",
-          zIndex: 5,
-          pointerEvents: "none",
-        }}
-      >
-        <span
-          style={{
-            fontFamily: "'JetBrains Mono', monospace",
-            fontSize: "10px",
-            letterSpacing: "0.12em",
-            color: "rgba(245,245,245,0.32)",
-          }}
-        >
-          © {year} {NAME}'S PORTFOLIO
-        </span>
-      </div>
+      {showContact && <ContactModal email={CONTACT_EMAIL} onClose={closeContact} />}
     </div>
   );
 }
